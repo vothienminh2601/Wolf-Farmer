@@ -1,0 +1,118 @@
+using System.Collections.Generic;
+using UnityEngine;
+
+public enum eTileType
+{
+    Empty,
+    Farming,
+    Animal
+}
+public class Tile : MonoBehaviour
+{
+    public List<Mesh> tileMeshes;
+    public int X { get; private set; }
+    public int Z { get; private set; }
+    public int GlobalX { get; private set; }
+    public int GlobalZ { get; private set; }
+
+    public eTileType Type = eTileType.Empty;
+    public bool IsOccupied => placedObject != null;
+    [SerializeField] private Transform placement;
+
+    private FarmPlot parentPlot;
+    private GameObject placedObject;  // vật đang được đặt lên tile
+    private MeshRenderer meshRenderer;
+    private MeshFilter meshFilter;
+
+    // -------------------------------------------------------------
+    // Khởi tạo
+    // -------------------------------------------------------------
+    public void Setup(FarmPlot plot, int x, int z)
+    {
+        meshRenderer = GetComponent<MeshRenderer>();
+        meshFilter = GetComponent<MeshFilter>();
+        
+        parentPlot = plot;
+        X = x;
+        Z = z;
+        Type = eTileType.Empty;
+
+        GlobalX = plot.PlotX * plot.TilesPerRow + x;
+        GlobalZ = plot.PlotZ * plot.TilesPerRow + z;
+        UpdateVisual();
+    }
+
+    // -------------------------------------------------------------
+    // Thay đổi loại đất (nếu không bị chiếm)
+    // -------------------------------------------------------------
+    public void SetType(eTileType newType)
+    {
+        if (IsOccupied)
+        {
+            Debug.LogWarning($"Tile [{GlobalX},{GlobalZ}] đang có vật thể, không thể đổi kiểu!");
+            return;
+        }
+
+        Type = newType;
+        UpdateVisual();
+    }
+
+    // -------------------------------------------------------------
+    // Đặt vật thể lên tile (chỉ khi rỗng)
+    // -------------------------------------------------------------
+    public bool PlaceObject(GameObject prefab, Vector3 pos = default, Quaternion rot = default)
+    {
+        if (Type != eTileType.Empty)
+        {
+            Debug.LogWarning($"Tile [{GlobalX},{GlobalZ}] không phải đất trống, không thể đặt vật.");
+            return false;
+        }
+
+        if (IsOccupied)
+        {
+            Debug.LogWarning($"Tile [{GlobalX},{GlobalZ}] đã có vật thể!");
+            return false;
+        }
+
+        // Nếu không có giá trị truyền vào, dùng mặc định
+        if (rot == default) rot = Quaternion.identity;
+
+        placedObject = Instantiate(prefab, placement);
+        placedObject.transform.localPosition = pos;  // ⚙️ dùng offset
+        placedObject.transform.localRotation = rot;  // ⚙️ dùng xoay
+        return true;
+    }
+    
+    // -------------------------------------------------------------
+    // Xóa vật thể khỏi tile
+    // -------------------------------------------------------------
+    public void RemoveObject()
+    {
+        if (!IsOccupied) return;
+        Object.Destroy(placedObject);
+        placedObject = null;
+    }
+
+    // -------------------------------------------------------------
+    // Hiển thị trực quan
+    // -------------------------------------------------------------
+    private void UpdateVisual()
+    {
+        if (meshFilter == null) return;
+
+        switch (Type)
+        {
+            case eTileType.Empty:
+                meshFilter.mesh = tileMeshes[0];
+                break;
+            case eTileType.Farming:
+                meshFilter.mesh = tileMeshes[1];
+                break;
+            case eTileType.Animal:
+                meshFilter.mesh = tileMeshes[2]; // vàng nhạt
+                break;
+        }
+    }
+
+    public FarmPlot GetParentPlot() => parentPlot;
+}
