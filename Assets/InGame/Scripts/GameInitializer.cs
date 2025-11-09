@@ -65,15 +65,15 @@ public class GameInitializer : MonoBehaviour
     };
 
         // --- Danh sách ---
-        List<FarmPlot> cropPlots = new();
-        List<FarmPlot> animalPlots = new();
-        FarmPlot housePlot = null;
+        List<Plot> cropPlots = new();
+        List<Plot> animalPlots = new();
+        Plot housePlot = null;
 
         // --- Phân loại theo tọa độ ---
         foreach (var kvp in fieldManager.Plots)
         {
             Vector2Int coord = kvp.Key;
-            FarmPlot plot = kvp.Value;
+            Plot plot = kvp.Value;
 
             if (coord == houseCoord)
             {
@@ -120,9 +120,9 @@ public class GameInitializer : MonoBehaviour
     }
 
 
-    private FarmPlot GetCenterPlot()
+    private Plot GetCenterPlot()
     {
-        FarmPlot center = null;
+        Plot center = null;
         float minDist = float.MaxValue;
         foreach (var plot in fieldManager.Plots)
         {
@@ -136,7 +136,7 @@ public class GameInitializer : MonoBehaviour
         return center;
     }
 
-    private void SetupPlot(FarmPlot plot, string name, GameObject markerPrefab , Vector3 pos = default, Quaternion rot = default)
+    private void SetupPlot(Plot plot, string name, GameObject markerPrefab , Vector3 pos = default, Quaternion rot = default)
     {
         plot.name = name + $" ({plot.PlotX},{plot.PlotZ})";
 
@@ -148,9 +148,9 @@ public class GameInitializer : MonoBehaviour
         }
     }
 
-    private void SetCenterTilesToType(FarmPlot plot, eTileType type)
+    private void SetCenterTilesToType(Plot plot, eTileType type)
     {
-        int total = plot.TilesPerRow;
+        int total = GameConfigs.TILES_PER_PLOT;
         int start = (total - 3) / 2;
         int end = start + 3;
 
@@ -168,7 +168,7 @@ public class GameInitializer : MonoBehaviour
     // -------------------------------------------------------------
     // 🪵 Đặt hàng rào quanh plot trồng cây
     // -------------------------------------------------------------
-    private void PlaceFencesForFarmingPlot(FarmPlot plot)
+    private void PlaceFencesForFarmingPlot(Plot plot)
     {
         if (fenceIPrefab == null || fenceLPrefab == null)
         {
@@ -176,7 +176,7 @@ public class GameInitializer : MonoBehaviour
             return;
         }
 
-        int n = plot.TilesPerRow;
+        int n = GameConfigs.TILES_PER_PLOT;
         int midX = n / 2; // ô giữa hàng trên cùng (ví dụ 2 nếu 5x5)
 
         // --- Góc (Fence L) ---

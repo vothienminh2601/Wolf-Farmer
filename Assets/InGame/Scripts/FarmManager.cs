@@ -9,21 +9,19 @@ public class FarmManager : MonoBehaviour
     [SerializeField] private GameObject tilePrefab; 
     [SerializeField] private Material baseMaterial;
     [SerializeField] private int plotsPerRow = 3;
-    [SerializeField] private int tilesPerPlot = 5; 
-    [SerializeField] private float tileSpacing = 2f; 
     [SerializeField] private float plotGap = 1f; 
 
-    [SerializeField] private List<FarmPlot> farmPlots = new();
+    [SerializeField] private List<Plot> farmPlots = new();
 
     // Từ điển lưu tất cả plot và tile theo tọa độ
-    private readonly Dictionary<Vector2Int, FarmPlot> _plots = new();
-    public Dictionary<Vector2Int, FarmPlot> Plots => _plots;
+    private readonly Dictionary<Vector2Int, Plot> _plots = new();
+    public Dictionary<Vector2Int, Plot> Plots => _plots;
     private readonly Dictionary<Vector2Int, Tile> _globalTileMap = new();
 
     [ContextMenu("Ref Components")]
     void RefComponents()
     {
-        farmPlots = GetComponentsInChildren<FarmPlot>(true).ToList();
+        farmPlots = GetComponentsInChildren<Plot>(true).ToList();
     }
     private void RegisterExistingPlots()
     {
@@ -69,7 +67,7 @@ public class FarmManager : MonoBehaviour
     {
         if (_plots.ContainsKey(coord)) return;
 
-        float plotSize = (tilesPerPlot - 1) * tileSpacing;
+        float plotSize = (GameConfigs.TILES_PER_PLOT - 1) * GameConfigs.TILES_SPACING;
         Vector3 pos = new Vector3(
             coord.x * (plotSize + plotGap),
             0,
@@ -79,10 +77,10 @@ public class FarmManager : MonoBehaviour
         GameObject plotObj = Instantiate(plotPrefab, pos, Quaternion.identity, transform);
         plotObj.name = $"Plot_{coord.x}_{coord.y}";
 
-        FarmPlot plot = plotObj.GetComponent<FarmPlot>();
-        if (plot == null) plot = plotObj.AddComponent<FarmPlot>();
+        Plot plot = plotObj.GetComponent<Plot>();
+        if (plot == null) plot = plotObj.AddComponent<Plot>();
 
-        plot.Initialize(this, coord.x, coord.y, tilesPerPlot, tileSpacing, tilePrefab, baseMaterial);
+        plot.Initialize(this, coord.x, coord.y, GameConfigs.TILES_SPACING, tilePrefab, baseMaterial);
         _plots.Add(coord, plot);
 
         // Đăng ký các tile của plot vào global map
@@ -130,7 +128,7 @@ public class FarmManager : MonoBehaviour
     }
 
     public bool HasPlotAt(Vector2Int coord) => _plots.ContainsKey(coord);
-    public FarmPlot GetPlot(Vector2Int coord)
+    public Plot GetPlot(Vector2Int coord)
     {
         _plots.TryGetValue(coord, out var plot);
         return plot;

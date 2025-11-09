@@ -18,8 +18,7 @@ public class Tile : MonoBehaviour
     public eTileType Type = eTileType.Empty;
     public bool IsOccupied => placedObject != null;
     [SerializeField] private Transform placement;
-
-    private FarmPlot parentPlot;
+    private Plot parentPlot;
     private GameObject placedObject;  // vật đang được đặt lên tile
     private MeshRenderer meshRenderer;
     private MeshFilter meshFilter;
@@ -27,7 +26,7 @@ public class Tile : MonoBehaviour
     // -------------------------------------------------------------
     // Khởi tạo
     // -------------------------------------------------------------
-    public void Setup(FarmPlot plot, int x, int z)
+    public void Setup(Plot plot, int x, int z)
     {
         meshRenderer = GetComponent<MeshRenderer>();
         meshFilter = GetComponent<MeshFilter>();
@@ -37,8 +36,8 @@ public class Tile : MonoBehaviour
         Z = z;
         Type = eTileType.Empty;
 
-        GlobalX = plot.PlotX * plot.TilesPerRow + x;
-        GlobalZ = plot.PlotZ * plot.TilesPerRow + z;
+        GlobalX = plot.PlotX * GameConfigs.TILES_PER_PLOT + x;
+        GlobalZ = plot.PlotZ * GameConfigs.TILES_PER_PLOT + z;
         UpdateVisual();
     }
 
@@ -82,14 +81,25 @@ public class Tile : MonoBehaviour
         placedObject.transform.localRotation = rot;  // ⚙️ dùng xoay
         return true;
     }
-    
+
     // -------------------------------------------------------------
     // Xóa vật thể khỏi tile
     // -------------------------------------------------------------
+
+    public void Select(bool selected)
+    {
+        var rend = GetComponent<Renderer>();
+        if (rend != null)
+        {
+            Color baseColor = Color.white;
+            rend.material.color = selected ? Color.green : baseColor; // sáng khi chọn
+        }
+    }
+    
     public void RemoveObject()
     {
         if (!IsOccupied) return;
-        Object.Destroy(placedObject);
+        Destroy(placedObject);
         placedObject = null;
     }
 
@@ -114,5 +124,5 @@ public class Tile : MonoBehaviour
         }
     }
 
-    public FarmPlot GetParentPlot() => parentPlot;
+    public Plot GetParentPlot() => parentPlot;
 }

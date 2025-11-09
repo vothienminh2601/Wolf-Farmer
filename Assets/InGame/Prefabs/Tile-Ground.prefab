@@ -12,7 +12,8 @@ GameObject:
   - component: {fileID: 4773667000400858881}
   - component: {fileID: 8465903769933995767}
   - component: {fileID: 4133763119156213418}
-  m_Layer: 0
+  - component: {fileID: 5827591222521350626}
+  m_Layer: 7
   m_Name: Tile-Ground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -106,6 +107,29 @@ MonoBehaviour:
   - {fileID: 591112039434375823, guid: 103f78f6391ea5d4db40ae648a43c794, type: 3}
   Type: 0
   placement: {fileID: 66358163804777022}
+  outline: {fileID: 0}
+--- !u!64 &5827591222521350626
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6667899787225458019}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -7387873702037156926, guid: f62392bd6a9766243b69ef2c7c8e3851, type: 3}
 --- !u!1 &7005876909006226784
 GameObject:
   m_ObjectHideFlags: 0
