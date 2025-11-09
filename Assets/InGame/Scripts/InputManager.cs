@@ -13,8 +13,7 @@ public class InputManager : MonoBehaviour
     [Header("Camera")]
     [SerializeField] private CameraController cameraController;
     [SerializeField] private UITilePopup uiTilePopUp;
-    [SerializeField] private Vector3 offestUI;
-
+    [SerializeField] private UIPlotInfor uIPlotInfor;
     [SerializeField] private Plot selectedPlot;   // plot hiện tại
     [SerializeField] private Tile selectedTile;   // tile hiện tại
 
@@ -73,6 +72,7 @@ public class InputManager : MonoBehaviour
                     
                     cameraController.FocusOn(plotOfTile);
                     isFocusedOnPlot = true;
+                    uIPlotInfor?.Show(plotOfTile);
                     OnPlotClicked?.Invoke(plotOfTile);
                     DeselectTile();
                     return;
@@ -92,6 +92,7 @@ public class InputManager : MonoBehaviour
             // click ra ngoài → hủy chọn
             DeselectTile();
             DeselectPlot();
+            uIPlotInfor?.Hide();
             cameraController.ResetCamera();
         }
     }
@@ -124,12 +125,9 @@ public class InputManager : MonoBehaviour
 
         selectedTile = tile;
         selectedTile.Select(true);
-        
-        uiTilePopUp.transform.position = selectedTile.transform.position + offestUI;
-        uiTilePopUp.transform.LookAt(Camera.main.transform);
-        uiTilePopUp.transform.rotation = Quaternion.LookRotation(uiTilePopUp.transform.position - Camera.main.transform.position);
+
+        uiTilePopUp?.Show(tile);
         OnTileSelected?.Invoke(tile);
-        uiTilePopUp.gameObject.SetActive(true);
     }
 
     private void DeselectTile()
@@ -139,7 +137,7 @@ public class InputManager : MonoBehaviour
             selectedTile.Select(false);
             OnTileDeselected?.Invoke(selectedTile);
             selectedTile = null;
-            uiTilePopUp.gameObject.SetActive(false);
+            uiTilePopUp?.Hide();
         }
     }
 

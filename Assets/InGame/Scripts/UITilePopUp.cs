@@ -6,6 +6,7 @@ public class UITilePopup : MonoBehaviour
     [SerializeField] private GameObject panel;
     [SerializeField] private Button btnFarm;
     [SerializeField] private Button btnAnimal;
+    [SerializeField] private Vector3 offest;
 
     private Tile currentTile;
 
@@ -16,13 +17,15 @@ public class UITilePopup : MonoBehaviour
         btnAnimal.onClick.AddListener(() => OnSelect(eTileType.Animal));
     }
 
-    public void Show(Tile tile, Vector3 screenPos)
+    public void Show(Tile tile)
     {
         currentTile = tile;
         panel.SetActive(true);
 
         // đặt vị trí popup theo vị trí con trỏ
-        panel.transform.position = screenPos;
+        panel.transform.position = tile.transform.position + offest;
+        // panel.transform.LookAt(Camera.main.transform);
+        // panel.transform.rotation = Quaternion.LookRotation(panel.transform.position - Camera.main.transform.position);
     }
 
     public void Hide()

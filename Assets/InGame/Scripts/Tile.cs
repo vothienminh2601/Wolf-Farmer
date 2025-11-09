@@ -19,7 +19,7 @@ public class Tile : MonoBehaviour
     public bool IsOccupied => placedObject != null;
     [SerializeField] private Transform placement;
     private Plot parentPlot;
-    private GameObject placedObject;  // vật đang được đặt lên tile
+    [SerializeField] private GameObject placedObject;  // vật đang được đặt lên tile
     private MeshRenderer meshRenderer;
     private MeshFilter meshFilter;
 
@@ -96,7 +96,7 @@ public class Tile : MonoBehaviour
         }
     }
     
-    public void RemoveObject()
+    public void RemovePlacement()
     {
         if (!IsOccupied) return;
         Destroy(placedObject);

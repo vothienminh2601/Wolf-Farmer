@@ -1,9 +1,20 @@
-    using UnityEngine;
+using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 
+public enum ePlotPurpose
+{
+    Empty,
+    Cultivation,
+    Farming,
+    Animal,
+    Building
+}
+
+
 public class Plot : MonoBehaviour
 {
+    public ePlotPurpose Purpose = ePlotPurpose.Empty;
     public int PlotX { get; private set; }
     public int PlotZ { get; private set; }
     private FarmManager field;
@@ -32,11 +43,11 @@ public class Plot : MonoBehaviour
         this.baseMaterial = baseMaterial;
 
         outline.transform.localScale = Vector3.one * GameConfigs.TILES_PER_PLOT * 2;
-        outline.transform.localPosition = new Vector3(0, GameConfigs.TILES_PER_PLOT, 0 );
+        outline.transform.localPosition = new Vector3(0, GameConfigs.TILES_PER_PLOT, 0);
 
         GenerateTiles();
     }
-    
+
     public void Select(bool selected)
     {
         outline?.gameObject.SetActive(selected);
@@ -74,6 +85,44 @@ public class Plot : MonoBehaviour
                 tiles.Add(tile);
             }
         }
+    }
+
+    public void SetPurpose(ePlotPurpose purpose)
+    {
+        Purpose = purpose;
+
+        switch (purpose)
+        {
+            case ePlotPurpose.Farming:
+                BuildFence();
+                BuildFarmingTiles();
+                break;
+
+            case ePlotPurpose.Animal:
+                BuildFence();
+                BuildAnimalTiles();
+                break;
+
+            case ePlotPurpose.Building:
+                // reserved for later
+                break;
+        }
+    }
+
+    private void BuildFence()
+    {
+        // FenceBuilder.Instance.BuildForPlot(this);
+    }
+
+    private void BuildFarmingTiles()
+    {
+        // gán eTileType.Farming cho vùng trung tâm
+        foreach (var t in tiles) t.SetType(eTileType.Farming);
+    }
+
+    private void BuildAnimalTiles()
+    {
+        foreach (var t in tiles) t.SetType(eTileType.Animal);
     }
 
     public IEnumerable<Tile> GetAllTiles() => tiles;
