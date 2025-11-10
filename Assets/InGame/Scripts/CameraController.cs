@@ -33,9 +33,6 @@ public class CameraController : MonoBehaviour
         HandleZoom();
     }
 
-    // -------------------------------------------------------------
-    // Focus camera vào plot theo hướng hiện tại
-    // -------------------------------------------------------------
     public void FocusOn(Plot plot)
     {
         if (plot == null) return;
@@ -52,9 +49,7 @@ public class CameraController : MonoBehaviour
         transform.DORotateQuaternion(Quaternion.LookRotation(plot.transform.position - targetPos), moveDuration);
     }
 
-    // -------------------------------------------------------------
-    // Xoay camera quanh plot
-    // -------------------------------------------------------------
+
     private void HandleRotationInput()
     {
         if (targetPlot == null) return;
@@ -65,7 +60,6 @@ public class CameraController : MonoBehaviour
             currentYaw += rotInput * rotationSpeed * Time.deltaTime;
         }
 
-        // Giữ góc nghiêng cố định (isometric)
         Quaternion yawRot = Quaternion.Euler(0, currentYaw, 0);
         Quaternion pitchRot = Quaternion.Euler(isoAngle, 0, 0);
 
@@ -74,9 +68,7 @@ public class CameraController : MonoBehaviour
         transform.LookAt(targetPlot.transform.position);
     }
 
-    // -------------------------------------------------------------
-    // Zoom camera (orthographic)
-    // -------------------------------------------------------------
+
     private void HandleZoom()
     {
         if (cam == null) return;

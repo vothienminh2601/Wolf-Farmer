@@ -12,6 +12,7 @@ public class UIPlotInfor : MonoBehaviour
     [SerializeField] private Button cultivationBtn;
     [SerializeField] private Button buildingBtn, reassignBtn;
     [SerializeField] private Button farmingBtn, animalBtn;
+    [SerializeField] private UIItemContain uIItemContain;
 
     [SerializeField] private RectTransform cultivationBtnContain;
     [SerializeField] private TMP_Text titleTxt;
@@ -52,6 +53,7 @@ public class UIPlotInfor : MonoBehaviour
                 break;
             case ePlotPurpose.Farming:
                 ShowCultivationPanel();
+                uIItemContain?.ShowSeedList(selectedPlot);
                 break;
             case ePlotPurpose.Animal:
                 ShowCultivationPanel();
@@ -99,12 +101,15 @@ public class UIPlotInfor : MonoBehaviour
     void OnClickFarming()
     {
         cultivationBtnContain.gameObject.SetActive(false);
+        BuilderManager.Instance.BuildCropPlot(selectedPlot);
         selectedPlot.Purpose = ePlotPurpose.Farming;
+        uIItemContain?.ShowSeedList(selectedPlot);
     }
 
     void OnClickAnimal()
     {
         cultivationBtnContain.gameObject.SetActive(false);
+        BuilderManager.Instance.BuildAnimalPlot(selectedPlot);
         selectedPlot.Purpose = ePlotPurpose.Animal;
     }
 
@@ -114,12 +119,37 @@ public class UIPlotInfor : MonoBehaviour
         buildPanel.gameObject.SetActive(true);
         selectedPlot.Purpose = ePlotPurpose.Building;
     }
-    
+
     void OnClickReassign()
     {
         ShowPurplePanel();
         cultivationBtnContain.gameObject.SetActive(true);
         selectedPlot.Purpose = ePlotPurpose.Empty;
+
+        CultivationManager.Instance.UnregisterPlot(selectedPlot);
+
         BuilderManager.Instance.ClearPlot(selectedPlot);
+    }
+    
+    void HandleFarmingPlot()
+    {
+        CultivationData data = CultivationManager.Instance != null
+            ? CultivationManager.Instance.GetCultivationData(selectedPlot)
+            : null;
+
+        // if (data == null)
+        // {
+        //     // Plot chưa trồng => cho chọn hạt giống
+        //     uIItemContain?.ShowSeedList(selectedPlot);
+        //     plotInfoPanel.gameObject.SetActive(false);
+        //     currentData = null;
+        // }
+        // else
+        // {
+        //     // Plot đã trồng => hiển thị thông tin
+        //     currentData = data;
+        //     plotInfoPanel.gameObject.SetActive(true);
+        //     uIItemContain.gameObject.SetActive(false);
+        // }
     }
 }

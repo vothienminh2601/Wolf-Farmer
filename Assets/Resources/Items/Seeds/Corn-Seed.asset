@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f017ecdee00bfb84e9a3b688eeb93a1a, type: 3}
+  m_Name: Corn-Seed
+  m_EditorClassIdentifier: 
+  itemName: Corn-Seed
+  icon: {fileID: 21300000, guid: b685be5dc5983474995cf84d5a626b3d, type: 3}
+  prefab: {fileID: 3592292179363212890, guid: 179272029244a8742b63543f435a1375, type: 3}
+  category: 0
+  baseValue: 0
+  cropSteps:
+  - {fileID: 5497211735150880983, guid: e4d6cf5dfac217e4aa57b954b8cc1105, type: 3}
+  - {fileID: 5962430241588196273, guid: ff4ed0f60d4a5a54b9b1a0b2fad77c78, type: 3}
+  - {fileID: 2658104347403863969, guid: 530671a6dcce5b84992a7417b0d91c86, type: 3}
+  - {fileID: 1961812934998804934, guid: d211fdb599021ee40a5ee6d840fb510d, type: 3}

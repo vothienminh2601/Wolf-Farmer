@@ -61,12 +61,6 @@ public class Tile : MonoBehaviour
     // -------------------------------------------------------------
     public bool PlaceObject(GameObject prefab, Vector3 pos = default, Quaternion rot = default)
     {
-        if (Type != eTileType.Empty)
-        {
-            Debug.LogWarning($"Tile [{GlobalX},{GlobalZ}] không phải đất trống, không thể đặt vật.");
-            return false;
-        }
-
         if (IsOccupied)
         {
             Debug.LogWarning($"Tile [{GlobalX},{GlobalZ}] đã có vật thể!");
