@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,8 +7,15 @@ public class UIItemContain : MonoBehaviour
     [Header("References")]
     [SerializeField] private GameObject itemPrefab;
     [SerializeField] private RectTransform contentParent;
-
     private Plot targetPlot;
+
+    private Action onClick;
+
+    void OnDestroy()
+    {
+        onClick = null;
+    }
+    
 
     public void ShowSeedList(Plot plot)
     {
@@ -17,13 +25,18 @@ public class UIItemContain : MonoBehaviour
         BuildSeedList();
         gameObject.SetActive(true);
     }
+    
+    public void RegisterOnClick(Action callback)
+    {
+        onClick += callback;
+    }
 
     private void BuildSeedList()
     {
         ClearList();
 
         // Lấy dữ liệu từ PlayerInventory
-        List<ItemData> seedItems = PlayerInventory.Instance.GetSeedItems();
+        List<ItemData> seedItems = InventoryManager.Instance.GetSeedItems();
         Debug.Log(seedItems.Count);
         foreach (var item in seedItems)
         {
@@ -56,9 +69,10 @@ public class UIItemContain : MonoBehaviour
         targetPlot.Purpose = ePlotPurpose.Farming;
 
         // 🔹 Trừ hạt trong inventory
-        PlayerInventory.Instance.UseSeed(item.itemSO);
+        InventoryManager.Instance.UseSeed(item.itemSO);
 
-        Debug.Log($"🌾 Đã trồng {item.itemSO.itemName}, còn {PlayerInventory.Instance.GetQuantity(item.itemSO)} hạt");
+        Debug.Log($"🌾 Đã trồng {item.itemSO.itemName}, còn {InventoryManager.Instance.GetQuantity(item.itemSO)} hạt");
+        onClick?.Invoke();
         Hide();
     }
 

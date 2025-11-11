@@ -17,6 +17,10 @@ MonoBehaviour:
   prefab: {fileID: 1843047611692261039, guid: 256ee734e1107824e95e2e8f58e3e099, type: 3}
   category: 0
   baseValue: 0
+  stageDuration: 10
+  fruitInterval: 10
+  maxFruitCount: 10
+  fruitPrefab: {fileID: 6135725866374095408, guid: cb18711f41ffcbf4aaf3e2840e50005f, type: 3}
   cropSteps:
   - {fileID: 1199961213495498342, guid: e320f6a030aee824bb57e27031ae774e, type: 3}
   - {fileID: 6024616547219601927, guid: 7dcfc0262ea40ce41892de4befc9a847, type: 3}

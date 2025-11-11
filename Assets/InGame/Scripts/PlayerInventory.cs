@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerInventory : MonoBehaviour
+public class InventoryManager : MonoBehaviour
 {
-    public static PlayerInventory Instance { get; private set; }
+    public static InventoryManager Instance { get; private set; }
 
     [SerializeField] private List<ItemData> items = new(); // danh sách vật phẩm runtime
 

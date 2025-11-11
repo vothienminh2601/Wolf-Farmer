@@ -1,44 +1,113 @@
 using UnityEngine;
 
+public enum eCropStage
+{
+    Seed = 0,
+    Growing = 1,
+    Mature = 2,
+    Withered = 3
+}
+
 [System.Serializable]
 public class CultivationData
 {
     public Plot plot;
     public SeedSO seed;
-    public int currentStage;      // index của cropSteps
-    public float growthTimer;     // thời gian đã trôi qua
-    public float stageDuration = 30f; // mỗi giai đoạn (mặc định 30s)
 
-    public bool IsReadyToHarvest => currentStage >= seed.cropSteps.Count - 1;
+    public eCropStage CropStage;
+    public float growthTimer;
+    public float stageDuration = 30f;
+    [Header("Fruit")]
+    public int fruitCount;
+    public int maxFruitCount = 5;
+    public float fruitInterval = 10f;
+    public float fruitTimer;
+
+    public bool IsMature => (int)CropStage >= seed.cropSteps.Count - 2;  // Stage cuối
+    public bool IsDead => fruitCount >= maxFruitCount;
 
     public CultivationData(Plot plot, SeedSO seed)
     {
         this.plot = plot;
         this.seed = seed;
-        this.currentStage = 0;
+        this.CropStage = 0;
         this.growthTimer = 0f;
+
+        // Đọc dữ liệu từ SeedSO nếu có
+        if (seed != null)
+        {
+            stageDuration = seed.stageDuration > 0 ? seed.stageDuration : stageDuration;
+            maxFruitCount = seed.maxFruitCount > 0 ? seed.maxFruitCount : maxFruitCount;
+            fruitInterval = seed.fruitInterval > 0 ? seed.fruitInterval : fruitInterval;
+        }
+
         UpdateVisual();
     }
 
     public void Tick(float deltaTime)
     {
-        if (IsReadyToHarvest) return;
+        if (IsDead) return;
 
-        growthTimer += deltaTime;
-        if (growthTimer >= stageDuration)
+        if (!IsMature)
         {
-            growthTimer = 0f;
-            AdvanceStage();
+            // Phát triển tới stage 3
+            growthTimer += deltaTime;
+            if (growthTimer >= stageDuration)
+            {
+                growthTimer = 0f;
+                AdvanceStage();
+            }
+        }
+        else
+        {
+            // Khi đã trưởng thành: bắt đầu ra trái định kỳ
+            fruitTimer += deltaTime;
+            if (fruitTimer >= fruitInterval)
+            {
+                fruitTimer = 0f;
+                SpawnFruit();
+            }
         }
     }
 
     private void AdvanceStage()
     {
-        currentStage++;
-        if (currentStage >= seed.cropSteps.Count)
-            currentStage = seed.cropSteps.Count - 1;
+        // Chặn không cho vượt qua stage trưởng thành
+        if ((int)CropStage >= seed.cropSteps.Count - 1)
+        {
+            CropStage = (eCropStage)(seed.cropSteps.Count - 1);
+            return;
+        }
 
+        CropStage++;
         UpdateVisual();
+    }
+
+    private void SpawnFruit()
+    {
+        if (IsDead) return;
+
+        fruitCount++;
+
+        foreach (Tile tile in plot.GetAllTiles())
+        {
+            if (tile == null || tile.Type != eTileType.Farming) continue;
+            Vector3 pos = tile.transform.position + new Vector3(0, 3, 0);
+
+            // Gọi FruitManager spawn prefab và quản lý
+            FruitManager.Instance.SpawnFruit(seed, seed.fruitPrefab, pos, plot);
+        }
+
+        if (fruitCount >= maxFruitCount)
+        {
+            // Die();
+        }
+    }
+
+    private void Die()
+    {
+        BuilderManager.Instance.ClearPlot(plot);
+        CultivationManager.Instance.UnregisterPlot(plot);
     }
 
     private void UpdateVisual()
@@ -46,19 +115,14 @@ public class CultivationData
         if (plot == null || seed == null) return;
         if (seed.cropSteps == null || seed.cropSteps.Count == 0) return;
 
-
-        GameObject prefab = seed.cropSteps[currentStage];
+        GameObject prefab = seed.cropSteps[Mathf.Clamp((int)CropStage, 0, seed.cropSteps.Count - 1)];
         if (prefab == null) return;
 
-        
         foreach (Tile tile in plot.GetAllTiles())
         {
             if (tile == null || tile.Type != eTileType.Farming) continue;
             tile.RemovePlacement();
-
             tile.PlaceObject(prefab);
         }
-
-        Debug.Log($"🌿 Plot ({plot.PlotX},{plot.PlotZ}) → Stage {currentStage + 1}/{seed.cropSteps.Count}");
     }
 }

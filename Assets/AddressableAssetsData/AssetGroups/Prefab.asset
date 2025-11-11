@@ -1,0 +1,119 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Prefab
+  m_EditorClassIdentifier: 
+  m_GroupName: Prefab
+  m_GUID: 8feb07e340baa964fa282e73a3b6c524
+  m_SerializeEntries:
+  - m_GUID: 0791778db11f95e4c8d1da6c03a2b1ba
+    m_Address: Assets/InGame/Prefabs/Plants/Steps/Carrot/Carrot_Step_02.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 09d0dfe3e8479414982e7dda21687c0a
+    m_Address: Assets/InGame/Prefabs/Plants/Steps/Mushroom/Mushroom_Step_01.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 20f5c58af2f56b34cb8a91a6f6448bed
+    m_Address: Assets/InGame/Prefabs/Plants/Steps/Cauliflower/Cauliflower_Dead.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 38ae49677b6f5944ea161818a771f199
+    m_Address: Assets/InGame/Prefabs/Plants/Steps/Mushroom/Mushroom_Step_02.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4e5f772bae347174e8494feaa43d1db9
+    m_Address: Assets/InGame/Prefabs/Plants/Steps/Cauliflower/Cauliflower_Step_03.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 524a1ee2890a4a842a2ae88b9b087f00
+    m_Address: Assets/InGame/Prefabs/Plants/Steps/Broccoli/Broccoli_Step_01.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6905957f9da8bd94aa82617e4e446ab5
+    m_Address: Assets/InGame/Prefabs/Plants/Steps/Cauliflower/Cauliflower_Step_01.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6e76033695e2ced48b3f4d30458baa76
+    m_Address: Assets/InGame/Prefabs/Plants/Steps/Carrot/Carrot_Step_03.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8b5bfc8441ec5b54887f0ec032f15aff
+    m_Address: Assets/InGame/Prefabs/Plants/Steps/Carrot/Carrot_Step_01.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9fef936ca8554e24da534d843bff2657
+    m_Address: Assets/InGame/Prefabs/Plants/Steps/Mushroom/Mushroom_Dead.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a11f649bbd25cae408740f5439982f3b
+    m_Address: Assets/InGame/Prefabs/Plants/Steps/Mushroom/Mushroom_Step_03.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a2ef4ee2568e3f2489d8d39e5a0723c9
+    m_Address: Assets/InGame/Prefabs/Plants/Steps/Broccoli/Broccoli_Step_02.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cfa878248add03b48b74d5d083d7022c
+    m_Address: Assets/InGame/Prefabs/Plants/Steps/Broccoli/Broccoli_Step_03.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d1f10390ba252754f9577e70e0df4aed
+    m_Address: Assets/InGame/Prefabs/Plants/Steps/Broccoli/Broccoli_Dead.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e3e3680b0e6d360479a3996e9800b614
+    m_Address: Assets/InGame/Prefabs/Plants/Steps/Carrot/Carrot_Dead.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ed3b7539c5a0add4e8b57e33835e45db
+    m_Address: Assets/InGame/Prefabs/Plants/Steps/Cauliflower/Cauliflower_Step_02.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prefab
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: af9d60531024df74a97d11af2905b549, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 04c1c9cd850500f4c90d9b239fda40a2, type: 2}
+    - {fileID: 11400000, guid: 84e2e174679e5ec43bff24637de195f4, type: 2}

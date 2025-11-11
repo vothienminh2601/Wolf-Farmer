@@ -13,6 +13,7 @@ public class UIPlotInfor : MonoBehaviour
     [SerializeField] private Button buildingBtn, reassignBtn;
     [SerializeField] private Button farmingBtn, animalBtn;
     [SerializeField] private UIItemContain uIItemContain;
+    [SerializeField] private UIFarmingInfor uIFarmingInfor;
 
     [SerializeField] private RectTransform cultivationBtnContain;
     [SerializeField] private TMP_Text titleTxt;
@@ -26,6 +27,8 @@ public class UIPlotInfor : MonoBehaviour
         animalBtn.onClick.AddListener(OnClickAnimal);
         reassignBtn.onClick.AddListener(OnClickReassign);
 
+
+        uIItemContain.RegisterOnClick(ShowFarmingPanel);
         gameObject.SetActive(false);
     }
 
@@ -52,8 +55,7 @@ public class UIPlotInfor : MonoBehaviour
                 ShowCultivationPanel();
                 break;
             case ePlotPurpose.Farming:
-                ShowCultivationPanel();
-                uIItemContain?.ShowSeedList(selectedPlot);
+                ShowFarmingPanel();
                 break;
             case ePlotPurpose.Animal:
                 ShowCultivationPanel();
@@ -88,6 +90,18 @@ public class UIPlotInfor : MonoBehaviour
     {
         ShowBuildPanel();
         cultivationBtnContain.gameObject.SetActive(selectedPlot.Purpose == ePlotPurpose.Cultivation);
+    }
+
+    void ShowFarmingPanel()
+    {
+        ShowCultivationPanel();
+        CultivationData data = CultivationManager.Instance != null
+            ? CultivationManager.Instance.GetCultivationData(selectedPlot)
+            : null;
+        uIItemContain.gameObject.SetActive(data == null);
+        uIFarmingInfor.gameObject.SetActive(data != null);
+        uIFarmingInfor?.Bind(data);
+        
     }
 
     void OnClickCultivation()
