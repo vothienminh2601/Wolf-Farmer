@@ -464,6 +464,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 144673191}
+  - component: {fileID: 144673192}
   m_Layer: 0
   m_Name: Prefab-Manager
   m_TagString: Untagged
@@ -486,6 +487,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 536591768}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &144673192
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 144673190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6b09288929ffdd44b7fd2a8ac1512ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &148591676
 GameObject:
   m_ObjectHideFlags: 0
@@ -775,6 +788,52 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 225555444}
   m_CullTransparentMesh: 1
+--- !u!1 &231125353
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 231125354}
+  - component: {fileID: 231125355}
+  m_Layer: 0
+  m_Name: Data-Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &231125354
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 231125353}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1137916337}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &231125355
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 231125353}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9205c6895e8e5bd4e949d343f1a8c6df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fruitCSV: {fileID: 4900000, guid: f2e0a0a3e7ae1a8488d90597400e22e7, type: 3}
+  seedCSV: {fileID: 4900000, guid: 226ebf8a786a5324fb6c1e4a819df6a7, type: 3}
 --- !u!1 &244471942
 GameObject:
   m_ObjectHideFlags: 0
@@ -1640,7 +1699,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 10, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &448366961
 MonoBehaviour:
@@ -3113,6 +3172,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 898665093}
+  - component: {fileID: 898665094}
   m_Layer: 0
   m_Name: Sprite-Manager
   m_TagString: Untagged
@@ -3135,6 +3195,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 536591768}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &898665094
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 898665092}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7247135f85e07ef45ba4d599b1b21513, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &923218257
 GameObject:
   m_ObjectHideFlags: 0
@@ -4035,6 +4107,7 @@ Transform:
   - {fileID: 1674625120}
   - {fileID: 1755466194}
   - {fileID: 1347578753}
+  - {fileID: 231125354}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1170868920
@@ -4801,8 +4874,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.25}
   m_AnchorMax: {x: 1, y: 0.75}
-  m_AnchoredPosition: {x: -5, y: 0}
-  m_SizeDelta: {x: -20, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1383791939
 GameObject:
@@ -4901,7 +4974,7 @@ MonoBehaviour:
     m_Bottom: 0
   m_ChildAlignment: 3
   m_Spacing: 0
-  m_ChildForceExpandWidth: 0
+  m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 0
   m_ChildControlHeight: 0
@@ -5005,7 +5078,7 @@ MonoBehaviour:
     m_Bottom: 0
   m_ChildAlignment: 3
   m_Spacing: 0
-  m_ChildForceExpandWidth: 0
+  m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 0
   m_ChildControlHeight: 0
@@ -6167,13 +6240,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   items:
-  - itemSO: {fileID: 11400000, guid: 1446c21c62fb27f47be0b33b90aab618, type: 2}
+  - itemId: seed_001
     quantity: 10
-  - itemSO: {fileID: 11400000, guid: 4c91b317c74496c4eb8f4b248d4f2071, type: 2}
+  - itemId: seed_002
     quantity: 10
-  - itemSO: {fileID: 11400000, guid: ea4c591d4b8b3f1439e5a113534bc099, type: 2}
+  - itemId: seed_003
     quantity: 10
-  - itemSO: {fileID: 11400000, guid: 4d822bffe465c8140b4388eaf64ce52e, type: 2}
+  - itemId: seed_004
+    quantity: 10
+  - itemId: seed_005
     quantity: 10
 --- !u!1 &1677131884
 GameObject:
@@ -6347,7 +6422,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 120, y: 50}
+  m_SizeDelta: {x: 125, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1694777893
 MonoBehaviour:
@@ -6547,16 +6622,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   updateInterval: 1
-  activePlots:
-  - plot: {fileID: 0}
-    seed: {fileID: 0}
-    CropStage: 0
-    growthTimer: 0
-    stageDuration: 0
-    fruitCount: 0
-    maxFruitCount: 0
-    fruitInterval: 0
-    fruitTimer: 0
 --- !u!1 &1760559090
 GameObject:
   m_ObjectHideFlags: 0

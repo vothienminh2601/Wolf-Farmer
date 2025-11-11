@@ -94,14 +94,24 @@ public class UIPlotInfor : MonoBehaviour
 
     void ShowFarmingPanel()
     {
+        Debug.Log("Farming");
         ShowCultivationPanel();
         CultivationData data = CultivationManager.Instance != null
             ? CultivationManager.Instance.GetCultivationData(selectedPlot)
             : null;
+        
         uIItemContain.gameObject.SetActive(data == null);
         uIFarmingInfor.gameObject.SetActive(data != null);
-        uIFarmingInfor?.Bind(data);
-        
+        if (data != null)
+        {
+            uIFarmingInfor?.Bind(data);
+
+        }
+        else
+        {
+            uIItemContain?.ShowSeedList(selectedPlot);
+        }
+
     }
 
     void OnClickCultivation()

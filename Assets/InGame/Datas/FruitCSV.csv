@@ -1,0 +1,6 @@
+﻿id,name,value,"icon_path	",prefab_path,description
+fruit_001,Broccoli,50,Broccoli_icon,Broccoli_Crop,A fresh broccoli
+fruit_002,Carrot,51,Carrot_icon,Carrot_Crop,A fresh broccoli
+fruit_003,Cauliflower,52,Cauliflower_icon,Cauliflower_Crop,A fresh broccoli
+fruit_004,Corn,53,Corn_icon,Corn_Crop,A fresh broccoli
+fruit_005,Mushroom,54,Mushroom_icon,Mushroom_Crop,A fresh broccoli

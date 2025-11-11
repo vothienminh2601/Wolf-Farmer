@@ -1,16 +1,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// Quản lý toàn bộ hoạt động canh tác.
-/// Mỗi plot có một CultivationData.
-/// </summary>
 public class CultivationManager : Singleton<CultivationManager>
 {
     [Header("Settings")]
     [SerializeField] private float updateInterval = 1f;
 
-    [SerializeField] private List<CultivationData> activePlots = new();
+    private readonly List<CultivationData> activePlots = new();
     private float timer;
 
     void Update()
@@ -27,7 +23,7 @@ public class CultivationManager : Singleton<CultivationManager>
     {
         for (int i = activePlots.Count - 1; i >= 0; i--)
         {
-            CultivationData data = activePlots[i];
+            var data = activePlots[i];
             if (data == null || data.plot == null)
             {
                 activePlots.RemoveAt(i);
@@ -36,7 +32,6 @@ public class CultivationManager : Singleton<CultivationManager>
 
             data.Tick(updateInterval);
 
-            // Nếu cây đã chết, tự xóa khỏi danh sách
             if (data.IsDead)
                 activePlots.RemoveAt(i);
         }
@@ -47,19 +42,15 @@ public class CultivationManager : Singleton<CultivationManager>
         return activePlots.Find(p => p.plot == plot);
     }
 
-    public void RegisterCropPlot(Plot plot, ItemData seedItem)
+    public void RegisterCropPlot(Plot plot, SeedData seed)
     {
-        if (plot == null || seedItem == null || seedItem.itemSO == null)
-            return;
-
-        SeedSO seed = seedItem.itemSO as SeedSO;
-        if (seed == null)
+        if (plot == null || seed == null)
             return;
 
         if (activePlots.Exists(p => p.plot == plot))
             return;
 
-        CultivationData data = new CultivationData(plot, seed);
+        var data = new CultivationData(plot, seed);
         activePlots.Add(data);
     }
 
@@ -73,22 +64,10 @@ public class CultivationManager : Singleton<CultivationManager>
     {
         if (plot == null) return;
 
-        CultivationData data = activePlots.Find(p => p.plot == plot);
+        var data = activePlots.Find(p => p.plot == plot);
         if (data == null || !data.IsMature) return;
 
-        // Thu hoạch thủ công (nếu cần)
         BuilderManager.Instance.ClearPlot(plot);
         UnregisterPlot(plot);
-    }
-
-    public List<Plot> GetReadyPlots()
-    {
-        List<Plot> ready = new();
-        foreach (var p in activePlots)
-        {
-            if (p.IsMature && !p.IsDead)
-                ready.Add(p.plot);
-        }
-        return ready;
     }
 }

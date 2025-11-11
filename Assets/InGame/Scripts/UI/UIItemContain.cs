@@ -7,25 +7,27 @@ public class UIItemContain : MonoBehaviour
     [Header("References")]
     [SerializeField] private GameObject itemPrefab;
     [SerializeField] private RectTransform contentParent;
-    private Plot targetPlot;
 
+    private Plot targetPlot;
     private Action onClick;
 
     void OnDestroy()
     {
         onClick = null;
     }
-    
 
+    /// <summary>
+    /// Hiển thị toàn bộ seed có trong game, đồng thời hiển thị số lượng hiện có trong kho.
+    /// </summary>
     public void ShowSeedList(Plot plot)
     {
         if (plot == null) return;
-        Debug.Log(1);
         targetPlot = plot;
+
         BuildSeedList();
         gameObject.SetActive(true);
     }
-    
+
     public void RegisterOnClick(Action callback)
     {
         onClick += callback;
@@ -35,17 +37,27 @@ public class UIItemContain : MonoBehaviour
     {
         ClearList();
 
-        // Lấy dữ liệu từ PlayerInventory
-        List<ItemData> seedItems = InventoryManager.Instance.GetSeedItems();
-        Debug.Log(seedItems.Count);
-        foreach (var item in seedItems)
-        {
-            if (item.itemSO == null) continue; // bỏ qua hạt hết
+        // Lấy tất cả seed từ DataManager
+        var allSeeds = DataManager.SeedDict;
+        Debug.Log($"Total seeds in game: {allSeeds.Count}");
 
+        foreach (var kv in allSeeds)
+        {
+            string seedId = kv.Key;
+            SeedData seedData = kv.Value;
+
+            // Lấy số lượng hiện có trong kho
+            int quantity = InventoryManager.Instance.GetQuantity(seedId);
+
+            // Tạo item UI
             GameObject go = Instantiate(itemPrefab, contentParent);
             UIItem ui = go.GetComponent<UIItem>();
-            ui.Setup(item.itemSO.icon, item.quantity,
-                () => OnSelectSeed(item));
+
+            // Load icon qua Addressables
+            seedData.LoadIcon(sprite =>
+            {
+                ui.Setup(sprite, quantity, () => OnSelectSeed(seedData, quantity));
+            });
         }
     }
 
@@ -55,23 +67,24 @@ public class UIItemContain : MonoBehaviour
             Destroy(child.gameObject);
     }
 
-    private void OnSelectSeed(ItemData item)
+    private void OnSelectSeed(SeedData seedData, int quantity)
     {
-        if (targetPlot == null || item.itemSO == null) return;
-        if (item.quantity <= 0)
+        if (targetPlot == null || seedData == null) return;
+
+        if (quantity <= 0)
         {
-            Debug.LogWarning($"Không đủ hạt {item.itemSO.itemName}");
+            Debug.LogWarning($"Không đủ hạt {seedData.name} để trồng");
             return;
         }
 
-        // 🔹 Trồng cây
-        CultivationManager.Instance.RegisterCropPlot(targetPlot, item);
+        // 🔹 Trồng cây mới
+        CultivationManager.Instance.RegisterCropPlot(targetPlot, seedData);
         targetPlot.Purpose = ePlotPurpose.Farming;
 
-        // 🔹 Trừ hạt trong inventory
-        InventoryManager.Instance.UseSeed(item.itemSO);
+        // 🔹 Giảm số lượng trong inventory
+        InventoryManager.Instance.UseSeed(seedData.id);
 
-        Debug.Log($"🌾 Đã trồng {item.itemSO.itemName}, còn {InventoryManager.Instance.GetQuantity(item.itemSO)} hạt");
+        Debug.Log($"🌾 Đã trồng {seedData.name}, còn lại {InventoryManager.Instance.GetQuantity(seedData.id)} hạt");
         onClick?.Invoke();
         Hide();
     }

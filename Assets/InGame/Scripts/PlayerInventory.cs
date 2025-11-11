@@ -1,11 +1,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Quản lý toàn bộ vật phẩm runtime của người chơi (hạt giống, trái, tài nguyên...)
+/// </summary>
 public class InventoryManager : MonoBehaviour
 {
     public static InventoryManager Instance { get; private set; }
 
-    [SerializeField] private List<ItemData> items = new(); // danh sách vật phẩm runtime
+    [System.Serializable]
+    public class ItemStack
+    {
+        public string itemId;
+        public int quantity;
+    }
+
+    [Header("Runtime Inventory")]
+    [SerializeField] private List<ItemStack> items = new(); // danh sách vật phẩm hiện có
 
     void Awake()
     {
@@ -13,32 +24,76 @@ public class InventoryManager : MonoBehaviour
         Instance = this;
     }
 
-    // ✅ Lấy danh sách hạt giống còn lại
-    public List<ItemData> GetSeedItems()
+    // -------------------- LẤY DỮ LIỆU --------------------
+
+    /// <summary>
+    /// Lấy danh sách hạt giống (Seed) hiện có trong túi.
+    /// </summary>
+    public List<ItemStack> GetSeedItems()
     {
-        return items.FindAll(i => i.itemSO != null && i.itemSO.category == ItemCategory.CropSeed);
+        List<ItemStack> seeds = new();
+        foreach (var item in items)
+        {
+            if (DataManager.GetSeedById(item.itemId) != null)
+                seeds.Add(item);
+        }
+        return seeds;
     }
 
-    // ✅ Trừ hạt sau khi trồng
-    public void UseSeed(ItemSO seedItem)
+    /// <summary>
+    /// Lấy số lượng của 1 item cụ thể.
+    /// </summary>
+    public int GetQuantity(string itemId)
     {
-        var data = items.Find(i => i.itemSO == seedItem);
-        if (data != null && data.quantity > 0)
-            data.quantity--;
+        var item = items.Find(i => i.itemId == itemId);
+        return item != null ? item.quantity : 0;
     }
 
-    // ✅ Thêm hạt (khi mua hoặc thưởng)
-    public void AddItem(ItemSO item, int amount = 1)
+    // -------------------- THAO TÁC VẬT PHẨM --------------------
+
+    /// <summary>
+    /// Thêm vật phẩm (Fruit hoặc Seed).
+    /// </summary>
+    public void AddItem(string itemId, int amount = 1)
     {
-        var data = items.Find(i => i.itemSO == item);
-        if (data != null) data.quantity += amount;
-        else items.Add(new ItemData { itemSO = item, quantity = amount });
+        if (string.IsNullOrEmpty(itemId) || amount <= 0) return;
+
+        var item = items.Find(i => i.itemId == itemId);
+        if (item != null)
+            item.quantity += amount;
+        else
+            items.Add(new ItemStack { itemId = itemId, quantity = amount });
     }
 
-    // ✅ Lấy số lượng cụ thể
-    public int GetQuantity(ItemSO item)
+    /// <summary>
+    /// Dùng 1 hạt giống khi trồng.
+    /// </summary>
+    public void UseSeed(string seedId)
     {
-        var data = items.Find(i => i.itemSO == item);
-        return data != null ? data.quantity : 0;
+        var item = items.Find(i => i.itemId == seedId);
+        if (item != null && item.quantity > 0)
+        {
+            item.quantity--;
+            if (item.quantity <= 0)
+                items.Remove(item);
+        }
+    }
+
+    /// <summary>
+    /// Kiểm tra có đủ hạt giống không.
+    /// </summary>
+    public bool HasSeed(string seedId)
+    {
+        var item = items.Find(i => i.itemId == seedId);
+        return item != null && item.quantity > 0;
+    }
+
+    // -------------------- DEBUG / TEST --------------------
+    [ContextMenu("Print Inventory")]
+    private void PrintInventory()
+    {
+        Debug.Log("=== INVENTORY ===");
+        foreach (var item in items)
+            Debug.Log($"{item.itemId} x{item.quantity}");
     }
 }

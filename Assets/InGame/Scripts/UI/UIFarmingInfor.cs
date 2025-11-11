@@ -15,6 +15,11 @@ public class UIFarmingInfor : MonoBehaviour
 
     private CultivationData currentData;
 
+    void Start()
+    {
+        harvestBtn.onClick.AddListener(OnHarvestButtonClicked);
+    }
+
     public void Bind(CultivationData data)
     {
         currentData = data;
@@ -31,16 +36,15 @@ public class UIFarmingInfor : MonoBehaviour
     {
         if (currentData == null || currentData.seed == null) return;
 
-        cropTxt.text = $"Crop: {currentData.seed.itemName}";
+        cropTxt.text = $"Crop: {currentData.seed.name}";
         stageTxt.text = $"{currentData.CropStage}";
-        
-        float stageProgress = currentData.IsMature? 1f : currentData.growthTimer / currentData.stageDuration;
-        stageSlider.value = stageProgress;
 
+        float stageProgress = currentData.IsMature ? 1f : currentData.growthTimer / currentData.stageDuration;
+        stageSlider.value = stageProgress;
 
         fruitTxt.text = $"Fruit: {currentData.fruitCount}/{currentData.maxFruitCount}";
 
-        float spawnProgress = currentData.IsMature? currentData.fruitTimer / currentData.fruitInterval : 0f;
+        float spawnProgress = currentData.IsMature ? currentData.fruitTimer / currentData.fruitInterval : 0f;
         spawnSlider.value = spawnProgress;
 
         int unharvested = FruitManager.Instance.GetFruitCountByPlot(currentData.plot);
@@ -49,7 +53,7 @@ public class UIFarmingInfor : MonoBehaviour
         harvestBtn.interactable = unharvested > 0;
     }
 
-    public void OnHarvestButtonClicked()
+    private void OnHarvestButtonClicked()
     {
         if (currentData == null) return;
         FruitManager.Instance.CollectByPlot(currentData.plot);

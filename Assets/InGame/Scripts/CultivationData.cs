@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public enum eCropStage
 {
@@ -12,45 +13,47 @@ public enum eCropStage
 public class CultivationData
 {
     public Plot plot;
-    public SeedSO seed;
+    public SeedData seed;
 
     public eCropStage CropStage;
     public float growthTimer;
-    public float stageDuration = 30f;
-    [Header("Fruit")]
+    public float stageDuration;
+    
     public int fruitCount;
-    public int maxFruitCount = 5;
-    public float fruitInterval = 10f;
+    public int maxFruitCount;
+    public float fruitInterval;
     public float fruitTimer;
 
-    public bool IsMature => (int)CropStage >= seed.cropSteps.Count - 2;  // Stage cuối
-    public bool IsDead => fruitCount >= maxFruitCount;
+    public bool IsMature => CropStage == eCropStage.Mature;
+    public bool IsDead => CropStage == eCropStage.Withered;
 
-    public CultivationData(Plot plot, SeedSO seed)
+    private List<GameObject> stagePrefabs = new();
+
+    public CultivationData(Plot plot, SeedData seed)
     {
         this.plot = plot;
         this.seed = seed;
-        this.CropStage = 0;
+        this.CropStage = eCropStage.Seed;
         this.growthTimer = 0f;
 
-        // Đọc dữ liệu từ SeedSO nếu có
-        if (seed != null)
-        {
-            stageDuration = seed.stageDuration > 0 ? seed.stageDuration : stageDuration;
-            maxFruitCount = seed.maxFruitCount > 0 ? seed.maxFruitCount : maxFruitCount;
-            fruitInterval = seed.fruitInterval > 0 ? seed.fruitInterval : fruitInterval;
-        }
+        stageDuration = seed.stageDuration;
+        maxFruitCount = seed.maxFruitCount;
+        fruitInterval = seed.fruitInterval;
 
-        UpdateVisual();
+        // Load các prefab stage qua PrefabManager (Addressables)
+        seed.LoadCropSteps(prefabs =>
+        {
+            stagePrefabs = prefabs;
+            UpdateVisual();
+        });
     }
 
     public void Tick(float deltaTime)
     {
         if (IsDead) return;
 
-        if (!IsMature)
+        if (CropStage != eCropStage.Mature)
         {
-            // Phát triển tới stage 3
             growthTimer += deltaTime;
             if (growthTimer >= stageDuration)
             {
@@ -60,7 +63,6 @@ public class CultivationData
         }
         else
         {
-            // Khi đã trưởng thành: bắt đầu ra trái định kỳ
             fruitTimer += deltaTime;
             if (fruitTimer >= fruitInterval)
             {
@@ -72,50 +74,48 @@ public class CultivationData
 
     private void AdvanceStage()
     {
-        // Chặn không cho vượt qua stage trưởng thành
-        if ((int)CropStage >= seed.cropSteps.Count - 1)
-        {
-            CropStage = (eCropStage)(seed.cropSteps.Count - 1);
-            return;
-        }
+        if (CropStage == eCropStage.Seed)
+            CropStage = eCropStage.Growing;
+        else if (CropStage == eCropStage.Growing)
+            CropStage = eCropStage.Mature;
+        else
+            CropStage = eCropStage.Withered;
 
-        CropStage++;
         UpdateVisual();
     }
 
     private void SpawnFruit()
     {
-        if (IsDead) return;
-
+        if (CropStage != eCropStage.Mature) return;
         fruitCount++;
+
+        // Lấy FruitData từ Database qua ID
+        var fruit = DataManager.GetFruitById(seed.fruitId);
+        if (fruit == null) return;
 
         foreach (Tile tile in plot.GetAllTiles())
         {
             if (tile == null || tile.Type != eTileType.Farming) continue;
-            Vector3 pos = tile.transform.position + new Vector3(0, 3, 0);
+            Vector3 pos = tile.transform.position + Vector3.up * 3f;
 
-            // Gọi FruitManager spawn prefab và quản lý
-            FruitManager.Instance.SpawnFruit(seed, seed.fruitPrefab, pos, plot);
+            fruit.LoadPrefab(prefab =>
+            {
+                if (prefab != null)
+                    FruitManager.Instance.SpawnFruit(fruit, pos, plot);
+            });
         }
 
         if (fruitCount >= maxFruitCount)
-        {
-            // Die();
-        }
-    }
-
-    private void Die()
-    {
-        BuilderManager.Instance.ClearPlot(plot);
-        CultivationManager.Instance.UnregisterPlot(plot);
+            CropStage = eCropStage.Withered;
     }
 
     private void UpdateVisual()
     {
-        if (plot == null || seed == null) return;
-        if (seed.cropSteps == null || seed.cropSteps.Count == 0) return;
+        if (plot == null || stagePrefabs == null || stagePrefabs.Count == 0) return;
 
-        GameObject prefab = seed.cropSteps[Mathf.Clamp((int)CropStage, 0, seed.cropSteps.Count - 1)];
+        int stageIndex = (int)CropStage;
+        stageIndex = Mathf.Clamp(stageIndex, 0, stagePrefabs.Count - 1);
+        GameObject prefab = stagePrefabs[stageIndex];
         if (prefab == null) return;
 
         foreach (Tile tile in plot.GetAllTiles())
