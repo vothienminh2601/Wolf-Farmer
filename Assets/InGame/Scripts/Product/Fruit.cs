@@ -1,15 +1,14 @@
 using UnityEngine;
 
-public class Fruit : MonoBehaviour
+public class Fruit : Product
 {
-    private FruitData fruitData;
     private Plot sourcePlot;
     public Plot SourcePlot => sourcePlot;
     private bool collected;
 
-    public void Init(FruitData fruit, Plot plot)
+    public void Init(ProductData data, Plot plot)
     {
-        fruitData = fruit;
+        productData = data;
         sourcePlot = plot;
         collected = false;
     }
@@ -26,7 +25,7 @@ public class Fruit : MonoBehaviour
         FruitManager.Instance.NotifyCollected(this);
 
         // Thêm vào kho
-        InventoryManager.Instance.AddItem(fruitData.id, 1);
+        ResourceManager.Instance.AddFruit(productData.id, 1);
 
         Destroy(gameObject);
     }

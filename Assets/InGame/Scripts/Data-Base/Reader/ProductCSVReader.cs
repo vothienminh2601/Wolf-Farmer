@@ -2,11 +2,11 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-public class FruitCSVReader : ICSVReader<FruitData>
+public class ProductCSVReader : ICSVReader<ProductData>
 {
-    public UniTask<Dictionary<string, FruitData>> LoadDataFromCSV(TextAsset csvFile)
+    public UniTask<Dictionary<string, ProductData>> LoadDataFromCSV(TextAsset csvFile)
     {
-        Dictionary<string, FruitData> fruits = new();
+        Dictionary<string, ProductData> fruits = new();
 
         if (csvFile == null)
         {
@@ -38,7 +38,7 @@ public class FruitCSVReader : ICSVReader<FruitData>
                 continue;
             }
 
-            FruitData data = new FruitData
+            ProductData data = new ProductData
             {
                 id = cols[0].Trim(),
                 name = cols[1].Trim()

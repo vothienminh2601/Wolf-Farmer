@@ -12,7 +12,7 @@ public class FruitManager : Singleton<FruitManager>
     /// <summary>
     /// Spawn một Fruit dựa trên FruitData và prefabAddress.
     /// </summary>
-    public void SpawnFruit(FruitData fruitData, Vector3 position, Plot plot)
+    public void SpawnFruit(ProductData fruitData, Vector3 position, Plot plot)
     {
         if (fruitData == null || string.IsNullOrEmpty(fruitData.prefabAddress) || plot == null)
         {

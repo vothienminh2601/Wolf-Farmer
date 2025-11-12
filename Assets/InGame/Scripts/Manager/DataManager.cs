@@ -9,9 +9,11 @@ public class DataManager : Singleton<DataManager>
 {
     public TextAsset fruitCSV;
     public TextAsset seedCSV;
+    public TextAsset animalCSV;
 
     public static Dictionary<string, SeedData> SeedDict { get; private set; } = new();
-    public static Dictionary<string, FruitData> FruitDict { get; private set; } = new();
+    public static Dictionary<string, ProductData> FruitDict { get; private set; } = new();
+    public static Dictionary<string, AnimalData> AnimalDict { get; private set; } = new();
 
     void Awake()
     {
@@ -22,16 +24,17 @@ public class DataManager : Singleton<DataManager>
     public async void LoadAllData()
     {
         await LoadFruits();
-        await LoadSeeds();
+        LoadSeeds().Forget();
+        LoadAnimals().Forget();
     }
 
     async UniTask LoadFruits()
     {
-        var reader = CSVReaderFactory.CreateReader<FruitData>();
+        var reader = CSVReaderFactory.CreateReader<ProductData>();
         if (reader != null && fruitCSV != null)
             FruitDict = await reader.LoadDataFromCSV(fruitCSV);
         else
-            FruitDict = new Dictionary<string, FruitData>();
+            FruitDict = new Dictionary<string, ProductData>();
 
         Debug.Log($"Loaded {FruitDict.Count} Fruits");
     }
@@ -44,6 +47,17 @@ public class DataManager : Singleton<DataManager>
             SeedDict = new Dictionary<string, SeedData>();
 
         Debug.Log($"Loaded {SeedDict.Count} Seeds");
+    }
+
+    async UniTask LoadAnimals()
+    {
+        var reader = CSVReaderFactory.CreateReader<AnimalData>();
+        if (reader != null && animalCSV != null)
+            AnimalDict = await reader.LoadDataFromCSV(animalCSV);
+        else
+            AnimalDict = new Dictionary<string, AnimalData>();
+
+        Debug.Log($"Loaded {AnimalDict.Count} Animals");
     }
 
 
@@ -65,7 +79,7 @@ public class DataManager : Singleton<DataManager>
     /// <summary>
     /// Lấy dữ liệu Fruit theo ID.
     /// </summary>
-    public static FruitData GetFruitById(string id)
+    public static ProductData GetFruitById(string id)
     {
         if (string.IsNullOrEmpty(id))
         {

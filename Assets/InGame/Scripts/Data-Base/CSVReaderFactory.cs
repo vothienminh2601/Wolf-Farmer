@@ -21,8 +21,10 @@ public class CSVReaderFactory
     {
         if (typeof(T) == typeof(SeedData))
             return (ICSVReader<T>)new SeedCSVReader();
-        else if(typeof(T) == typeof(FruitData))
-            return (ICSVReader<T>)new FruitCSVReader();
+        else if (typeof(T) == typeof(ProductData))
+            return (ICSVReader<T>)new ProductCSVReader();
+        else if(typeof(T) == typeof(AnimalData))
+            return (ICSVReader<T>)new AnimalCSVReader();
 
         return null;
     }

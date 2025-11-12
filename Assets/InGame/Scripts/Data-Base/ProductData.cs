@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [System.Serializable]
-public class FruitData
+public class ProductData
 {
     public string id;               // fruit_001
     public string name;             // Tên hiển thị

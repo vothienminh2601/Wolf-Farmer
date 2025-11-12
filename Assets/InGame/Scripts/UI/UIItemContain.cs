@@ -47,7 +47,7 @@ public class UIItemContain : MonoBehaviour
             SeedData seedData = kv.Value;
 
             // Lấy số lượng hiện có trong kho
-            int quantity = InventoryManager.Instance.GetQuantity(seedId);
+            int quantity = ResourceManager.Instance.GetSeedCount(seedId);
 
             // Tạo item UI
             GameObject go = Instantiate(itemPrefab, contentParent);
@@ -82,9 +82,9 @@ public class UIItemContain : MonoBehaviour
         targetPlot.Purpose = ePlotPurpose.Farming;
 
         // 🔹 Giảm số lượng trong inventory
-        InventoryManager.Instance.UseSeed(seedData.id);
+        ResourceManager.Instance.UseSeed(seedData.id);
 
-        Debug.Log($"🌾 Đã trồng {seedData.name}, còn lại {InventoryManager.Instance.GetQuantity(seedData.id)} hạt");
+        Debug.Log($"🌾 Đã trồng {seedData.name}, còn lại {ResourceManager.Instance.GetSeedCount(seedData.id)} hạt");
         onClick?.Invoke();
         Hide();
     }
