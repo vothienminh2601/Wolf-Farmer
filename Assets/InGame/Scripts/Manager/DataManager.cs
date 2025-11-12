@@ -7,12 +7,12 @@ using UnityEngine;
 
 public class DataManager : Singleton<DataManager>
 {
-    public TextAsset fruitCSV;
+    public TextAsset productCSV;
     public TextAsset seedCSV;
     public TextAsset animalCSV;
 
     public static Dictionary<string, SeedData> SeedDict { get; private set; } = new();
-    public static Dictionary<string, ProductData> FruitDict { get; private set; } = new();
+    public static Dictionary<string, ProductData> ProductDict { get; private set; } = new();
     public static Dictionary<string, AnimalData> AnimalDict { get; private set; } = new();
 
     void Awake()
@@ -31,12 +31,12 @@ public class DataManager : Singleton<DataManager>
     async UniTask LoadFruits()
     {
         var reader = CSVReaderFactory.CreateReader<ProductData>();
-        if (reader != null && fruitCSV != null)
-            FruitDict = await reader.LoadDataFromCSV(fruitCSV);
+        if (reader != null && productCSV != null)
+            ProductDict = await reader.LoadDataFromCSV(productCSV);
         else
-            FruitDict = new Dictionary<string, ProductData>();
+            ProductDict = new Dictionary<string, ProductData>();
 
-        Debug.Log($"Loaded {FruitDict.Count} Fruits");
+        Debug.Log($"Loaded {ProductDict.Count} Products");
     }
     async UniTask LoadSeeds()
     {
@@ -79,7 +79,7 @@ public class DataManager : Singleton<DataManager>
     /// <summary>
     /// Lấy dữ liệu Fruit theo ID.
     /// </summary>
-    public static ProductData GetFruitById(string id)
+    public static ProductData GetProductById(string id)
     {
         if (string.IsNullOrEmpty(id))
         {
@@ -87,10 +87,10 @@ public class DataManager : Singleton<DataManager>
             return null;
         }
 
-        if (FruitDict.TryGetValue(id, out var fruit))
-            return fruit;
+        if (ProductDict.TryGetValue(id, out var product))
+            return product;
 
-        Debug.LogWarning($"Fruit ID '{id}' không tồn tại trong DataManager.");
+        Debug.LogWarning($"Product ID '{id}' không tồn tại trong DataManager.");
         return null;
     }
 }

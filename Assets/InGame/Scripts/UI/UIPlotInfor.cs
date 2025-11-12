@@ -12,8 +12,11 @@ public class UIPlotInfor : MonoBehaviour
     [SerializeField] private Button cultivationBtn;
     [SerializeField] private Button buildingBtn, reassignBtn;
     [SerializeField] private Button farmingBtn, animalBtn;
+
+    [Header("UI")]
     [SerializeField] private UIItemContain uIItemContain;
     [SerializeField] private UIFarmingInfor uIFarmingInfor;
+    [SerializeField] private UIAnimalInfo uIAnimalInfo;
 
     [SerializeField] private RectTransform cultivationBtnContain;
     [SerializeField] private TMP_Text titleTxt;
@@ -27,8 +30,6 @@ public class UIPlotInfor : MonoBehaviour
         animalBtn.onClick.AddListener(OnClickAnimal);
         reassignBtn.onClick.AddListener(OnClickReassign);
 
-
-        uIItemContain.RegisterOnClick(ShowFarmingPanel);
         gameObject.SetActive(false);
     }
 
@@ -58,7 +59,7 @@ public class UIPlotInfor : MonoBehaviour
                 ShowFarmingPanel();
                 break;
             case ePlotPurpose.Animal:
-                ShowCultivationPanel();
+                ShowAnimalPanel();
                 break;
             case ePlotPurpose.Building:
                 ShowBuildPanel();
@@ -84,42 +85,79 @@ public class UIPlotInfor : MonoBehaviour
         titleTxt.text = selectedPlot.Purpose.ToString();
         purposePanel.gameObject.SetActive(false);
         buildPanel.gameObject.SetActive(true);
+        uIFarmingInfor.gameObject.SetActive(false);
+        uIAnimalInfo.gameObject.SetActive(false);
     }
 
     void ShowCultivationPanel()
     {
         ShowBuildPanel();
         cultivationBtnContain.gameObject.SetActive(selectedPlot.Purpose == ePlotPurpose.Cultivation);
+        if(selectedPlot.Purpose == ePlotPurpose.Cultivation)
+        {
+            uIFarmingInfor.gameObject.SetActive(false);
+            uIAnimalInfo.gameObject.SetActive(false);
+            uIItemContain.gameObject.SetActive(false);
+        }
     }
 
     void ShowFarmingPanel()
     {
-        Debug.Log("Farming");
         ShowCultivationPanel();
         CultivationData data = CultivationManager.Instance != null
             ? CultivationManager.Instance.GetCultivationData(selectedPlot)
             : null;
-        
+
         uIItemContain.gameObject.SetActive(data == null);
         uIFarmingInfor.gameObject.SetActive(data != null);
         if (data != null)
         {
             uIFarmingInfor?.Bind(data);
-
         }
         else
         {
-            uIItemContain?.ShowSeedList(selectedPlot);
+            uIItemContain?.ShowItemList(selectedPlot, eItemType.Seed);
+            uIItemContain.RegisterOnClick(ShowFarmingPanel);
         }
 
+        Debug.Log("Show Farming");
+    }
+    
+    void ShowAnimalPanel()
+    {
+        ShowCultivationPanel();
+        AnimalUnit unit = AnimalManager.Instance != null
+            ? AnimalManager.Instance.GetAnimalData(selectedPlot)
+            : null;
+
+        Debug.Log("Animal " + unit);
+        uIItemContain.gameObject.SetActive(unit == null);
+        uIAnimalInfo.gameObject.SetActive(unit != null);
+        if (unit != null)
+        {
+            uIAnimalInfo?.Bind(unit);
+        }
+        else
+        {
+            uIItemContain?.ShowItemList(selectedPlot, eItemType.Animal);
+            uIItemContain.RegisterOnClick(ShowAnimalPanel);
+        }
+
+        Debug.Log("Show Animal");
     }
 
     void OnClickCultivation()
     {
         ShowBuildPanel();
-        cultivationBtnContain.gameObject.SetActive(true);
         selectedPlot.Purpose = ePlotPurpose.Cultivation;
         BuilderManager.Instance.BuildCultivationPlot(selectedPlot);
+        if(selectedPlot.Purpose == ePlotPurpose.Cultivation)
+        {
+            cultivationBtnContain.gameObject.SetActive(true);
+            uIFarmingInfor.gameObject.SetActive(false);
+            uIAnimalInfo.gameObject.SetActive(false);
+            uIItemContain.gameObject.SetActive(false);
+        }
     }
 
     void OnClickFarming()
@@ -127,7 +165,7 @@ public class UIPlotInfor : MonoBehaviour
         cultivationBtnContain.gameObject.SetActive(false);
         BuilderManager.Instance.BuildCropPlot(selectedPlot);
         selectedPlot.Purpose = ePlotPurpose.Farming;
-        uIItemContain?.ShowSeedList(selectedPlot);
+        uIItemContain?.ShowItemList(selectedPlot, eItemType.Seed);
     }
 
     void OnClickAnimal()
@@ -135,6 +173,7 @@ public class UIPlotInfor : MonoBehaviour
         cultivationBtnContain.gameObject.SetActive(false);
         BuilderManager.Instance.BuildAnimalPlot(selectedPlot);
         selectedPlot.Purpose = ePlotPurpose.Animal;
+         uIItemContain?.ShowItemList(selectedPlot, eItemType.Animal);
     }
 
     void OnClickBuilding()

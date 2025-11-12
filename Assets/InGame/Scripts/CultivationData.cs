@@ -17,11 +17,8 @@ public class CultivationData
 
     public eCropStage CropStage;
     public float growthTimer;
-    public float stageDuration;
     
     public int fruitCount;
-    public int maxFruitCount;
-    public float fruitInterval;
     public float fruitTimer;
 
     public bool IsMature => CropStage == eCropStage.Mature;
@@ -35,10 +32,6 @@ public class CultivationData
         this.seed = seed;
         this.CropStage = eCropStage.Seed;
         this.growthTimer = 0f;
-
-        stageDuration = seed.stageDuration;
-        maxFruitCount = seed.maxFruitCount;
-        fruitInterval = seed.fruitInterval;
 
         // Load các prefab stage qua PrefabManager (Addressables)
         seed.LoadCropSteps(prefabs =>
@@ -55,7 +48,7 @@ public class CultivationData
         if (CropStage != eCropStage.Mature)
         {
             growthTimer += deltaTime;
-            if (growthTimer >= stageDuration)
+            if (growthTimer >= seed.stageDuration)
             {
                 growthTimer = 0f;
                 AdvanceStage();
@@ -64,7 +57,7 @@ public class CultivationData
         else
         {
             fruitTimer += deltaTime;
-            if (fruitTimer >= fruitInterval)
+            if (fruitTimer >= seed.fruitInterval)
             {
                 fruitTimer = 0f;
                 SpawnFruit();
@@ -90,7 +83,7 @@ public class CultivationData
         fruitCount++;
 
         // Lấy FruitData từ Database qua ID
-        var fruit = DataManager.GetFruitById(seed.fruitId);
+        var fruit = DataManager.GetProductById(seed.fruitId);
         if (fruit == null) return;
 
         foreach (Tile tile in plot.GetAllTiles())
@@ -98,14 +91,10 @@ public class CultivationData
             if (tile == null || tile.Type != eTileType.Farming) continue;
             Vector3 pos = tile.transform.position + Vector3.up * 3f;
 
-            fruit.LoadPrefab(prefab =>
-            {
-                if (prefab != null)
-                    FruitManager.Instance.SpawnFruit(fruit, pos, plot);
-            });
+            ProductManager.Instance.SpawnProduct(fruit, pos, plot);
         }
 
-        if (fruitCount >= maxFruitCount)
+        if (fruitCount >= seed.maxFruitCount)
             CropStage = eCropStage.Withered;
     }
 

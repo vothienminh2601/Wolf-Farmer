@@ -78,13 +78,13 @@ public class InputManager : MonoBehaviour
                     return;
                 }
 
-                // Nếu đã focus đúng plot rồi → chọn tile
-                if (isFocusedOnPlot && selectedPlot == plotOfTile)
-                {
-                    SelectTile(tile);
-                    OnTileClicked?.Invoke(tile);
-                    return;
-                }
+                // // Nếu đã focus đúng plot rồi → chọn tile
+                // if (isFocusedOnPlot && selectedPlot == plotOfTile)
+                // {
+                //     SelectTile(tile);
+                //     OnTileClicked?.Invoke(tile);
+                //     return;
+                // }
             }
         }
         else

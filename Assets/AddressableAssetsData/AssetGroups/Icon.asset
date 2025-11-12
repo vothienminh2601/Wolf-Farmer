@@ -16,31 +16,43 @@ MonoBehaviour:
   m_GUID: 5560e00efc5ff9c4392d7afa176504c0
   m_SerializeEntries:
   - m_GUID: 2983001e4905a3e4cb3e44724005fc19
-    m_Address: Mushroom_icon
+    m_Address: Icons/Mushroom_icon
     m_ReadOnly: 0
     m_SerializedLabels:
     - Icon
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3e307394553c7fe429162a03a13a6df3
-    m_Address: Broccoli_icon
+    m_Address: Icons/Broccoli_icon
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Icon
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5eaa4ff734d38bd4fa6999af3feaf4cb
+    m_Address: Icons/Cow_icon
     m_ReadOnly: 0
     m_SerializedLabels:
     - Icon
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 68aed0a9c8fb1f94fa016202237ecb5e
-    m_Address: Cauliflower_icon
+    m_Address: Icons/Cauliflower_icon
     m_ReadOnly: 0
     m_SerializedLabels:
     - Icon
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 953f21f31688fdb4c9e3589dc0372838
-    m_Address: Carrot_icon
+    m_Address: Icons/Carrot_icon
     m_ReadOnly: 0
     m_SerializedLabels:
     - Icon
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b685be5dc5983474995cf84d5a626b3d
-    m_Address: Corn_icon
+    m_Address: Icons/Corn_icon
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Icon
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e160506e8d5c2fc44b5a9e22b048ec89
+    m_Address: Icons/Chicken_icon
     m_ReadOnly: 0
     m_SerializedLabels:
     - Icon

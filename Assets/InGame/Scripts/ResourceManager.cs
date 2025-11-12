@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -5,16 +6,16 @@ using UnityEngine;
 /// Quản lý toàn bộ tài nguyên và vật phẩm trong game.
 /// Bao gồm Coin, Seed, Fruit, Equipment, Worker, Farm và thống kê tổng.
 /// </summary>
-public class ResourceManager : MonoBehaviour
-{
-    public static ResourceManager Instance { get; private set; }
-
     [System.Serializable]
     public class ResourceStack
     {
         public string id;
         public int quantity;
     }
+public class ResourceManager : MonoBehaviour
+{
+    public static ResourceManager Instance { get; private set; }
+
 
     // ==============================
     [Header("Currency")]
@@ -22,10 +23,16 @@ public class ResourceManager : MonoBehaviour
 
     [Header("Gameplay Resources")]
     [SerializeField] private List<ResourceStack> seeds = new();
-    [SerializeField] private List<ResourceStack> fruits = new();
+    [SerializeField] private List<ResourceStack> animalBreeds = new();
+    [SerializeField] private List<ResourceStack> products = new();
+    [SerializeField] private List<ResourceStack> animals = new();
     [SerializeField] private List<ResourceStack> equipments = new();
     [SerializeField] private List<ResourceStack> workers = new();
-    [SerializeField] private List<ResourceStack> farms = new();
+
+    public static event Action<int> OnCoinChanged;
+    public static event Action<List<ResourceStack>> OnSeedChanged;
+    public static event Action<List<ResourceStack>> OnAnimalBreedChanged;
+    public static event Action<List<ResourceStack>> OnProductChanged;
 
     [Header("Statistics")]
     [SerializeField] private int totalHarvest;
@@ -45,34 +52,76 @@ public class ResourceManager : MonoBehaviour
     {
         coin += amount;
         if (coin < 0) coin = 0;
+        OnCoinChanged?.Invoke(coin);
     }
 
     public bool SpendCoin(int amount)
     {
         if (coin < amount) return false;
         coin -= amount;
+        OnCoinChanged?.Invoke(coin);
         return true;
     }
 
     // ============================================================
     // 🌱 SEED
     // ============================================================
-    public void AddSeed(string id, int amount = 1) => AddToList(seeds, id, amount);
-    public void UseSeed(string id, int amount = 1) => RemoveFromList(seeds, id, amount);
+    public void AddSeed(string id, int amount = 1) {
+        AddToList(seeds, id, amount);
+        OnSeedChanged?.Invoke(seeds);
+    }
+
+    public void UseSeed(string id, int amount = 1) {
+        RemoveFromList(seeds, id, amount);
+        OnSeedChanged?.Invoke(seeds);
+    }
     public int GetSeedCount(string id) => GetCount(seeds, id);
     public List<ResourceStack> GetAllSeeds() => seeds;
 
     // ============================================================
-    // 🍎 FRUIT
+    // 🌱 Animal Breed
     // ============================================================
-    public void AddFruit(string id, int amount = 1)
-    {
-        AddToList(fruits, id, amount);
-        totalHarvest += amount;
+    public void AddAnimalBreed(string id, int amount = 1) {
+        AddToList(animalBreeds, id, amount);
+        OnAnimalBreedChanged?.Invoke(animalBreeds);
     }
 
-    public int GetFruitCount(string id) => GetCount(fruits, id);
-    public List<ResourceStack> GetAllFruits() => fruits;
+    public void UseAnimalBreed(string id, int amount = 1) {
+        RemoveFromList(animalBreeds, id, amount);
+        OnAnimalBreedChanged?.Invoke(animalBreeds);
+    }
+    public int GetAnimalBreedCount(string id) => GetCount(animalBreeds, id);
+    public List<ResourceStack> GetAllAnimalBreeds() => seeds;
+
+    // ============================================================
+    // 🌱 ANIMAL
+    // ============================================================
+    public void AddAnimal(string id, int amount = 1) {
+        AddToList(animals, id, amount);
+    }
+    public void UseAnimal(string id, int amount = 1) {
+        RemoveFromList(animals, id, amount);
+    }
+    public int GetAnimalCount(string id) => GetCount(animals, id);
+    public List<ResourceStack> GetAllAnimals() => seeds;
+
+    // ============================================================
+    // 🍎 FRUIT
+    // ============================================================
+    public void AddProduct(string id, int amount = 1)
+    {
+        AddToList(products, id, amount);
+        totalHarvest += amount;
+        OnProductChanged?.Invoke(products);
+    }
+
+    public void ReduceProduct(string id, int amount = 1) {
+        RemoveFromList(products, id, amount);
+        OnProductChanged?.Invoke(products);
+    }
+
+    public int GetProductCount(string id) => GetCount(products, id);
+    public List<ResourceStack> GetAllProducts() => products;
 
     // ============================================================
     // ⚙️ EQUIPMENT
@@ -88,13 +137,6 @@ public class ResourceManager : MonoBehaviour
     public void RemoveWorker(string id, int amount = 1) => RemoveFromList(workers, id, amount);
     public int GetWorkerCount(string id) => GetCount(workers, id);
     public List<ResourceStack> GetAllWorkers() => workers;
-
-    // ============================================================
-    // 🌾 FARM
-    // ============================================================
-    public void AddFarm(string id, int amount = 1) => AddToList(farms, id, amount);
-    public int GetFarmCount(string id) => GetCount(farms, id);
-    public List<ResourceStack> GetAllFarms() => farms;
 
     // ============================================================
     // 📊 STATISTICS
@@ -130,27 +172,5 @@ public class ResourceManager : MonoBehaviour
     {
         var item = list.Find(i => i.id == id);
         return item != null ? item.quantity : 0;
-    }
-
-    // ============================================================
-    // 🧾 DEBUG
-    // ============================================================
-    [ContextMenu("Print Resource Summary")]
-    private void PrintResources()
-    {
-        Debug.Log($"=== RESOURCE SUMMARY ===");
-        Debug.Log($"Coin: {coin} | Total Harvest: {totalHarvest}");
-        PrintList("Seeds", seeds);
-        PrintList("Fruits", fruits);
-        PrintList("Equipments", equipments);
-        PrintList("Workers", workers);
-        PrintList("Farms", farms);
-    }
-
-    private void PrintList(string title, List<ResourceStack> list)
-    {
-        Debug.Log($"--- {title} ---");
-        foreach (var item in list)
-            Debug.Log($"{item.id} x{item.quantity}");
     }
 }

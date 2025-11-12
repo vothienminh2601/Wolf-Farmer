@@ -4,55 +4,56 @@ using UnityEngine;
 /// <summary>
 /// Quản lý tất cả trái cây spawn trong game, gắn liền với Plot.
 /// </summary>
-public class FruitManager : Singleton<FruitManager>
+public class ProductManager : Singleton<ProductManager>
 {
     // Lưu danh sách Fruit theo từng Plot
-    private readonly Dictionary<Plot, List<Fruit>> fruitByPlot = new();
+    private readonly Dictionary<Plot, List<Product>> productByPlot = new();
 
     /// <summary>
     /// Spawn một Fruit dựa trên FruitData và prefabAddress.
     /// </summary>
-    public void SpawnFruit(ProductData fruitData, Vector3 position, Plot plot)
+    public void SpawnProduct(ProductData productData, Vector3 position, Plot plot)
     {
-        if (fruitData == null || string.IsNullOrEmpty(fruitData.prefabAddress) || plot == null)
+
+        if (productData == null || string.IsNullOrEmpty(productData.prefabAddress) || plot == null)
         {
             Debug.LogWarning("FruitManager.SpawnFruit: dữ liệu không hợp lệ");
             return;
         }
 
         // Load prefab qua Addressables
-        PrefabManager.Instance.LoadPrefabAsync(fruitData.prefabAddress, prefab =>
+        PrefabManager.Instance.LoadPrefabAsync(productData.prefabAddress, prefab =>
         {
             if (prefab == null)
             {
-                Debug.LogWarning($"FruitManager: prefab không load được với key = {fruitData.prefabAddress}");
+                Debug.LogWarning($"FruitManager: prefab không load được với key = {productData.prefabAddress}");
                 return;
             }
 
             GameObject obj = Instantiate(prefab, position, Quaternion.identity);
-            Fruit fruit = obj.GetComponent<Fruit>();
-            if (fruit == null)
-                fruit = obj.AddComponent<Fruit>();
+            Product product = obj.GetComponent<Product>();
+            if (product == null)
+                product = obj.AddComponent<Product>();
 
-            fruit.Init(fruitData, plot);
+            product.Init(productData, plot);
 
             // Thêm vào danh sách quản lý
-            if (!fruitByPlot.ContainsKey(plot))
-                fruitByPlot[plot] = new List<Fruit>();
+            if (!productByPlot.ContainsKey(plot))
+                productByPlot[plot] = new List<Product>();
 
-            fruitByPlot[plot].Add(fruit);
+            productByPlot[plot].Add(product);
         });
     }
 
     /// <summary>
     /// Lấy số lượng fruit hiện có trên 1 plot.
     /// </summary>
-    public int GetFruitCountByPlot(Plot plot)
+    public int GetProductCountByPlot(Plot plot)
     {
-        if (plot == null || !fruitByPlot.ContainsKey(plot)) return 0;
+        if (plot == null || !productByPlot.ContainsKey(plot)) return 0;
 
         int count = 0;
-        foreach (var f in fruitByPlot[plot])
+        foreach (var f in productByPlot[plot])
         {
             if (f != null)
                 count++;
@@ -65,9 +66,9 @@ public class FruitManager : Singleton<FruitManager>
     /// </summary>
     public void CollectByPlot(Plot plot)
     {
-        if (plot == null || !fruitByPlot.ContainsKey(plot)) return;
+        if (plot == null || !productByPlot.ContainsKey(plot)) return;
 
-        var list = fruitByPlot[plot];
+        var list = productByPlot[plot];
         for (int i = list.Count - 1; i >= 0; i--)
         {
             var f = list[i];
@@ -76,7 +77,7 @@ public class FruitManager : Singleton<FruitManager>
         }
 
         list.Clear();
-        fruitByPlot.Remove(plot);
+        productByPlot.Remove(plot);
     }
 
     /// <summary>
@@ -84,7 +85,7 @@ public class FruitManager : Singleton<FruitManager>
     /// </summary>
     public void CollectAll()
     {
-        foreach (var kv in fruitByPlot)
+        foreach (var kv in productByPlot)
         {
             var list = kv.Value;
             for (int i = list.Count - 1; i >= 0; i--)
@@ -94,33 +95,33 @@ public class FruitManager : Singleton<FruitManager>
                 f.CollectInstant();
             }
         }
-        fruitByPlot.Clear();
+        productByPlot.Clear();
     }
 
     /// <summary>
     /// Gọi khi fruit đã được thu hoạch (click hoặc auto).
     /// </summary>
-    public void NotifyCollected(Fruit fruit)
+    public void NotifyCollected(Product product)
     {
-        if (fruit == null || fruit.SourcePlot == null) return;
+        if (product == null || product.SourcePlot == null) return;
 
-        Plot plot = fruit.SourcePlot;
-        if (!fruitByPlot.ContainsKey(plot)) return;
+        Plot plot = product.SourcePlot;
+        if (!productByPlot.ContainsKey(plot)) return;
 
-        fruitByPlot[plot].Remove(fruit);
+        productByPlot[plot].Remove(product);
 
-        if (fruitByPlot[plot].Count == 0)
-            fruitByPlot.Remove(plot);
+        if (productByPlot[plot].Count == 0)
+            productByPlot.Remove(plot);
     }
 
     /// <summary>
-    /// Xóa toàn bộ fruit của một plot (khi cây bị hủy hoặc chết).
+    /// Xóa toàn bộ product của một plot (khi cây bị hủy hoặc chết).
     /// </summary>
     public void ClearPlot(Plot plot)
     {
-        if (plot == null || !fruitByPlot.ContainsKey(plot)) return;
+        if (plot == null || !productByPlot.ContainsKey(plot)) return;
 
-        var list = fruitByPlot[plot];
+        var list = productByPlot[plot];
         foreach (var f in list)
         {
             if (f != null)
@@ -128,6 +129,6 @@ public class FruitManager : Singleton<FruitManager>
         }
 
         list.Clear();
-        fruitByPlot.Remove(plot);
+        productByPlot.Remove(plot);
     }
 }

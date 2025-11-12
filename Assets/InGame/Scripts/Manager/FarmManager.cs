@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 
-public class FarmManager : MonoBehaviour
+public class FarmManager : Singleton<FarmManager>
 {
     [Header("Prefabs & Settings")]
     [SerializeField] private GameObject plotPrefab; 
@@ -128,6 +128,21 @@ public class FarmManager : MonoBehaviour
     }
 
     public bool HasPlotAt(Vector2Int coord) => _plots.ContainsKey(coord);
+
+    public int GetTotalPlotCount() => _plots.Count;
+    public int GetActivePlotCount() => _plots.Count(p => p.Value.Purpose != ePlotPurpose.Empty);
+    public int GetPlotCountByEnum(ePlotPurpose purpose)
+    {
+        int count = 0;
+        foreach (var plot in _plots)
+        {
+            if (plot.Value == null) continue;
+            if (plot.Value.Purpose == purpose)
+                count++;
+        }
+        return count;
+    }
+    
     public Plot GetPlot(Vector2Int coord)
     {
         _plots.TryGetValue(coord, out var plot);

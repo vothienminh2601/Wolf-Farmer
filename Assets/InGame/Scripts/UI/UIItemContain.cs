@@ -2,6 +2,13 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum eItemType
+{
+    Seed,
+    Animal,
+    Product
+}
+
 public class UIItemContain : MonoBehaviour
 {
     [Header("References")]
@@ -17,43 +24,52 @@ public class UIItemContain : MonoBehaviour
     }
 
     /// <summary>
-    /// Hiển thị toàn bộ seed có trong game, đồng thời hiển thị số lượng hiện có trong kho.
+    /// Hiển thị danh sách item theo loại (Seed, Animal, Product).
     /// </summary>
-    public void ShowSeedList(Plot plot)
+    public void ShowItemList(Plot plot, eItemType itemType)
     {
-        if (plot == null) return;
         targetPlot = plot;
-
-        BuildSeedList();
+        BuildItemList(itemType);
         gameObject.SetActive(true);
     }
 
     public void RegisterOnClick(Action callback)
     {
-        onClick += callback;
+        onClick = callback;
     }
 
-    private void BuildSeedList()
+    private void BuildItemList(eItemType itemType)
     {
         ClearList();
 
-        // Lấy tất cả seed từ DataManager
-        var allSeeds = DataManager.SeedDict;
-        Debug.Log($"Total seeds in game: {allSeeds.Count}");
-
-        foreach (var kv in allSeeds)
+        // ✅ Lấy toàn bộ dữ liệu item theo loại
+        if (itemType == eItemType.Seed)
         {
-            string seedId = kv.Key;
+            BuildSeedList(DataManager.SeedDict);
+        }
+        else if (itemType == eItemType.Animal)
+        {
+            BuildAnimalList(DataManager.AnimalDict);
+        }
+        else if (itemType == eItemType.Product)
+        {
+            // BuildProductList(DataManager.FruitDict); 
+        }
+    }
+
+    // ---------------------- SEED ----------------------
+    private void BuildSeedList(Dictionary<string, SeedData> seeds)
+    {
+        foreach (var kv in seeds)
+        {
+            string id = kv.Key;
             SeedData seedData = kv.Value;
 
-            // Lấy số lượng hiện có trong kho
-            int quantity = ResourceManager.Instance.GetSeedCount(seedId);
+            int quantity = ResourceManager.Instance.GetSeedCount(id);
 
-            // Tạo item UI
             GameObject go = Instantiate(itemPrefab, contentParent);
             UIItem ui = go.GetComponent<UIItem>();
 
-            // Load icon qua Addressables
             seedData.LoadIcon(sprite =>
             {
                 ui.Setup(sprite, quantity, () => OnSelectSeed(seedData, quantity));
@@ -61,12 +77,58 @@ public class UIItemContain : MonoBehaviour
         }
     }
 
+    // ---------------------- ANIMAL ----------------------
+    private void BuildAnimalList(Dictionary<string, AnimalData> animals)
+    {
+        Debug.Log($"Total animals in game: {animals.Count}");
+
+        foreach (var kv in animals)
+        {
+            string id = kv.Key;
+            AnimalData data = kv.Value;
+
+            int quantity = ResourceManager.Instance.GetAnimalBreedCount(id);
+
+            GameObject go = Instantiate(itemPrefab, contentParent);
+            UIItem ui = go.GetComponent<UIItem>();
+
+            data.LoadIcon(sprite =>
+            {
+                ui.Setup(sprite, quantity, () => OnSelectAnimal(data, quantity));
+            });
+        }
+    }
+
+    // ---------------------- PRODUCT ----------------------
+    // private void BuildProductList(Dictionary<string, FruitData> products)
+    // {
+    //     Debug.Log($"Total products in game: {products.Count}");
+
+    //     foreach (var kv in products)
+    //     {
+    //         string id = kv.Key;
+    //         FruitData data = kv.Value;
+
+    //         int quantity = ResourceManager.Instance.GetFruitCount(id);
+
+    //         GameObject go = Instantiate(itemPrefab, contentParent);
+    //         UIItem ui = go.GetComponent<UIItem>();
+
+    //         data.LoadIcon(sprite =>
+    //         {
+    //             ui.Setup(sprite, quantity, null); // sản phẩm không có hành động
+    //         });
+    //     }
+    // }
+
+    // =====================================================
     private void ClearList()
     {
         foreach (Transform child in contentParent)
             Destroy(child.gameObject);
     }
 
+    // =====================================================
     private void OnSelectSeed(SeedData seedData, int quantity)
     {
         if (targetPlot == null || seedData == null) return;
@@ -77,14 +139,38 @@ public class UIItemContain : MonoBehaviour
             return;
         }
 
-        // 🔹 Trồng cây mới
+        // Trồng cây
         CultivationManager.Instance.RegisterCropPlot(targetPlot, seedData);
         targetPlot.Purpose = ePlotPurpose.Farming;
 
-        // 🔹 Giảm số lượng trong inventory
         ResourceManager.Instance.UseSeed(seedData.id);
-
         Debug.Log($"🌾 Đã trồng {seedData.name}, còn lại {ResourceManager.Instance.GetSeedCount(seedData.id)} hạt");
+
+        onClick?.Invoke();
+        Hide();
+    }
+
+    private void OnSelectAnimal(AnimalData animalData, int quantity)
+    {
+        if (targetPlot == null || animalData == null)
+        {
+            Debug.LogWarning("AnimalData null khi chọn!");
+            return;
+        }
+
+        if (quantity <= 0)
+        {
+            Debug.LogWarning($"Không đủ hạt {animalData.name} để trồng");
+            return;
+        }
+
+        // Nếu bạn có hệ thống chuồng (pen), gọi spawn bò tại vị trí đó
+        AnimalManager.Instance.AddAnimal(animalData, targetPlot);
+
+        ResourceManager.Instance.UseAnimalBreed(animalData.id);
+        ResourceManager.Instance.AddAnimal(animalData.id, 1);
+        Debug.Log($"🐮 Đã thêm {animalData.name} vào chuồng. Tổng: {ResourceManager.Instance.GetAnimalCount(animalData.id)}");
+
         onClick?.Invoke();
         Hide();
     }

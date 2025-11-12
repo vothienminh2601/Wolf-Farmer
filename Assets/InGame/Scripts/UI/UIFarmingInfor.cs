@@ -39,15 +39,15 @@ public class UIFarmingInfor : MonoBehaviour
         cropTxt.text = $"Crop: {currentData.seed.name}";
         stageTxt.text = $"{currentData.CropStage}";
 
-        float stageProgress = currentData.IsMature ? 1f : currentData.growthTimer / currentData.stageDuration;
+        float stageProgress = currentData.IsMature ? 1f : currentData.growthTimer / currentData.seed.stageDuration;
         stageSlider.value = stageProgress;
 
-        fruitTxt.text = $"Fruit: {currentData.fruitCount}/{currentData.maxFruitCount}";
+        fruitTxt.text = $"Fruit: {currentData.fruitCount}/{currentData.seed.maxFruitCount}";
 
-        float spawnProgress = currentData.IsMature ? currentData.fruitTimer / currentData.fruitInterval : 0f;
+        float spawnProgress = currentData.IsMature ? currentData.fruitTimer / currentData.seed.fruitInterval : 0f;
         spawnSlider.value = spawnProgress;
 
-        int unharvested = FruitManager.Instance.GetFruitCountByPlot(currentData.plot);
+        int unharvested = ProductManager.Instance.GetProductCountByPlot(currentData.plot);
         unharvestTxt.text = $"Unharvested: {unharvested}";
 
         harvestBtn.interactable = unharvested > 0;
@@ -56,6 +56,6 @@ public class UIFarmingInfor : MonoBehaviour
     private void OnHarvestButtonClicked()
     {
         if (currentData == null) return;
-        FruitManager.Instance.CollectByPlot(currentData.plot);
+        ProductManager.Instance.CollectByPlot(currentData.plot);
     }
 }
