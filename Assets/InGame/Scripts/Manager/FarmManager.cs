@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 public class FarmManager : Singleton<FarmManager>
 {
@@ -12,17 +13,20 @@ public class FarmManager : Singleton<FarmManager>
     [SerializeField] private float plotGap = 1f; 
 
     [SerializeField] private List<Plot> farmPlots = new();
-
-    // Từ điển lưu tất cả plot và tile theo tọa độ
     private readonly Dictionary<Vector2Int, Plot> _plots = new();
     public Dictionary<Vector2Int, Plot> Plots => _plots;
     private readonly Dictionary<Vector2Int, Tile> _globalTileMap = new();
+
+
+    public static event Action<int, int, List<Plot>> OnPlotChanged;
+
 
     [ContextMenu("Ref Components")]
     void RefComponents()
     {
         farmPlots = GetComponentsInChildren<Plot>(true).ToList();
     }
+
     private void RegisterExistingPlots()
     {
         _plots.Clear();
@@ -92,18 +96,31 @@ public class FarmManager : Singleton<FarmManager>
         }
     }
 
-    // --------------------------------------------
-    // Lấy tile theo tọa độ toàn cục
-    // --------------------------------------------
+    public void SetupPlot(Plot plot, ePlotPurpose purpose, GameObject markerPrefab = null,
+                          Vector3 pos = default, Quaternion rot = default)
+    {
+        if (plot == null) return;
+        plot.Purpose = purpose;
+        plot.name = $"{name} ({plot.PlotX},{plot.PlotZ})";
+
+        if (markerPrefab != null)
+        {
+            GameObject marker = Instantiate(markerPrefab, plot.transform);
+            marker.transform.localPosition = pos;
+            marker.transform.localRotation = rot;
+        }
+
+        OnPlotChanged?.Invoke(GetActivePlotCount(), GetEmptyPlotCount(), farmPlots);
+        Debug.Log($"✅ SetupPlot: {name} tại ({plot.PlotX},{plot.PlotZ})");
+    }
+
+
     public Tile GetTileAtGlobal(int gx, int gz)
     {
         _globalTileMap.TryGetValue(new Vector2Int(gx, gz), out var tile);
         return tile;
     }
 
-    // --------------------------------------------
-    // Lấy tile xung quanh tile được chọn
-    // --------------------------------------------
     public List<Tile> GetNeighborTiles(Tile center)
     {
         List<Tile> result = new();
@@ -128,9 +145,9 @@ public class FarmManager : Singleton<FarmManager>
     }
 
     public bool HasPlotAt(Vector2Int coord) => _plots.ContainsKey(coord);
-
     public int GetTotalPlotCount() => _plots.Count;
     public int GetActivePlotCount() => _plots.Count(p => p.Value.Purpose != ePlotPurpose.Empty);
+    public int GetEmptyPlotCount() => _plots.Count(p => p.Value.Purpose == ePlotPurpose.Empty);
     public int GetPlotCountByEnum(ePlotPurpose purpose)
     {
         int count = 0;

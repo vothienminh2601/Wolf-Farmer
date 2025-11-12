@@ -71,8 +71,8 @@ public class Tile : MonoBehaviour
         if (rot == default) rot = Quaternion.identity;
 
         placedObject = Instantiate(prefab, placement);
-        placedObject.transform.localPosition = pos;  // ⚙️ dùng offset
-        placedObject.transform.localRotation = rot;  // ⚙️ dùng xoay
+        placedObject.transform.localPosition = pos; 
+        placedObject.transform.localRotation = rot;
         return true;
     }
 

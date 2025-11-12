@@ -149,7 +149,7 @@ public class UIPlotInfor : MonoBehaviour
     void OnClickCultivation()
     {
         ShowBuildPanel();
-        selectedPlot.Purpose = ePlotPurpose.Cultivation;
+        selectedPlot.SetPurpose(ePlotPurpose.Cultivation);
         BuilderManager.Instance.BuildCultivationPlot(selectedPlot);
         if(selectedPlot.Purpose == ePlotPurpose.Cultivation)
         {
@@ -164,7 +164,7 @@ public class UIPlotInfor : MonoBehaviour
     {
         cultivationBtnContain.gameObject.SetActive(false);
         BuilderManager.Instance.BuildCropPlot(selectedPlot);
-        selectedPlot.Purpose = ePlotPurpose.Farming;
+        selectedPlot.SetPurpose(ePlotPurpose.Farming);
         uIItemContain?.ShowItemList(selectedPlot, eItemType.Seed);
     }
 
@@ -172,7 +172,7 @@ public class UIPlotInfor : MonoBehaviour
     {
         cultivationBtnContain.gameObject.SetActive(false);
         BuilderManager.Instance.BuildAnimalPlot(selectedPlot);
-        selectedPlot.Purpose = ePlotPurpose.Animal;
+        selectedPlot.SetPurpose(ePlotPurpose.Animal);
          uIItemContain?.ShowItemList(selectedPlot, eItemType.Animal);
     }
 
@@ -180,16 +180,17 @@ public class UIPlotInfor : MonoBehaviour
     {
         purposePanel.gameObject.SetActive(false);
         buildPanel.gameObject.SetActive(true);
-        selectedPlot.Purpose = ePlotPurpose.Building;
+        selectedPlot.SetPurpose(ePlotPurpose.Building);
     }
 
     void OnClickReassign()
     {
         ShowPurplePanel();
         cultivationBtnContain.gameObject.SetActive(true);
-        selectedPlot.Purpose = ePlotPurpose.Empty;
+        selectedPlot.SetPurpose(ePlotPurpose.Empty);
 
         CultivationManager.Instance.UnregisterPlot(selectedPlot);
+        AnimalManager.Instance.RemoveAnimalByPlot(selectedPlot);
 
         BuilderManager.Instance.ClearPlot(selectedPlot);
     }

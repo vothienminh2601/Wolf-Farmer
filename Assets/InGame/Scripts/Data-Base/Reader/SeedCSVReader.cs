@@ -44,14 +44,15 @@ public class SeedCSVReader : ICSVReader<SeedData>
             data.id = cols[0].Trim();
             data.name = cols[1].Trim();
 
-            float.TryParse(cols[2], out data.stageDuration);
-            float.TryParse(cols[3], out data.fruitInterval);
-            int.TryParse(cols[4], out data.maxFruitCount);
+            int.TryParse(cols[2], out data.baseValue);
+            float.TryParse(cols[3], out data.stageDuration);
+            float.TryParse(cols[4], out data.fruitInterval);
+            int.TryParse(cols[5], out data.maxFruitCount);
 
-            data.iconAddress = cols[5].Trim();
+            data.iconAddress = cols[6].Trim();
 
             // crop_steps (ngăn cách bằng ;)
-            string[] steps = cols[6].Split(';');
+            string[] steps = cols[7].Split(';');
             data.cropStepAddresses = new List<string>();
             foreach (string s in steps)
             {
@@ -60,7 +61,7 @@ public class SeedCSVReader : ICSVReader<SeedData>
                     data.cropStepAddresses.Add(path);
             }
 
-            data.fruitId = cols[7].Trim();
+            data.fruitId = cols[8].Trim();
 
             if (!seeds.ContainsKey(data.id))
                 seeds.Add(data.id, data);

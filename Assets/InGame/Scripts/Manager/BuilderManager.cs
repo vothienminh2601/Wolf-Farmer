@@ -3,8 +3,6 @@ using System;
 
 public class BuilderManager : Singleton<BuilderManager>
 {
-
-
     [Header("Prefabs")]
     [SerializeField] private GameObject fenceIPrefab;
     [SerializeField] private GameObject fenceLPrefab;
@@ -13,23 +11,6 @@ public class BuilderManager : Singleton<BuilderManager>
     [SerializeField] public GameObject animalMarkerPrefab;
 
     public static event Action<Plot> OnRequireCultivationTypeSelect; 
-
-    public void SetupPlot(Plot plot, ePlotPurpose purpose, GameObject markerPrefab = null,
-                          Vector3 pos = default, Quaternion rot = default)
-    {
-        if (plot == null) return;
-        plot.Purpose = purpose;
-        plot.name = $"{name} ({plot.PlotX},{plot.PlotZ})";
-
-        if (markerPrefab != null)
-        {
-            GameObject marker = Instantiate(markerPrefab, plot.transform);
-            marker.transform.localPosition = pos;
-            marker.transform.localRotation = rot;
-        }
-
-        Debug.Log($"✅ SetupPlot: {name} tại ({plot.PlotX},{plot.PlotZ})");
-    }
 
     public void BuildHouse(Plot plot, Vector3 pos = default, Quaternion rot = default)
     {
@@ -57,7 +38,7 @@ public class BuilderManager : Singleton<BuilderManager>
 
         Debug.Log($"🌱 Bắt đầu dựng đất canh tác tại plot ({plot.PlotX},{plot.PlotZ})...");
 
-        SetupPlot(plot, ePlotPurpose.Cultivation, null);
+        FarmManager.Instance.SetupPlot(plot, ePlotPurpose.Cultivation, null);
 
         BuildFence(plot);
 
@@ -71,7 +52,7 @@ public class BuilderManager : Singleton<BuilderManager>
             return;
         }
 
-        SetupPlot(plot, ePlotPurpose.Farming, cropMarkerPrefab);
+        FarmManager.Instance.SetupPlot(plot, ePlotPurpose.Farming, cropMarkerPrefab);
 
         int total = GameConfigs.TILES_PER_PLOT;
         int start = (total - 3) / 2;
@@ -98,7 +79,7 @@ public class BuilderManager : Singleton<BuilderManager>
             return;
         }
 
-        SetupPlot(plot, ePlotPurpose.Animal, animalMarkerPrefab);
+        FarmManager.Instance.SetupPlot(plot, ePlotPurpose.Animal, animalMarkerPrefab);
 
         int total = GameConfigs.TILES_PER_PLOT;
         int start = (total - 3) / 2;
@@ -193,7 +174,6 @@ public class BuilderManager : Singleton<BuilderManager>
 
         int clearedCount = 0;
 
-        // Duyệt qua toàn bộ tile trong plot
         foreach (Tile tile in plot.GetAllTiles())
         {
             if (tile == null) continue;
@@ -207,6 +187,9 @@ public class BuilderManager : Singleton<BuilderManager>
 
             tile.SetType(eTileType.Empty);
         }
+
+        FarmManager.Instance.SetupPlot(plot, ePlotPurpose.Empty, null);
+        
 
         Debug.Log($"🧹 Cleared plot ({plot.PlotX},{plot.PlotZ}) — removed {clearedCount} objects, reset all tiles.");
     }

@@ -15,6 +15,8 @@ public class UIResourceManager : MonoBehaviour
     [SerializeField] private TMP_Text farmTxt;
     [SerializeField] private Toggle productToggle;
 
+    [SerializeField] private Button shopBtn;
+
 
     [SerializeField] private UIProductDetail uIProductDetail;
 
@@ -23,25 +25,30 @@ public class UIResourceManager : MonoBehaviour
     {
         ResourceManager.OnCoinChanged += SetCoin;
         ResourceManager.OnProductChanged += SetProduct;
+        ResourceManager.OnStockChanged += SetStock;
+        FarmManager.OnPlotChanged += SetFarm;
+
+        uIProductDetail.gameObject.SetActive(false);
+        productToggle.isOn = false;
     }
 
     void Start()
     {
-        productToggle.onValueChanged.AddListener(ShowProductDetail);
+        productToggle.onValueChanged.AddListener(ToggleProductDetail);
+        shopBtn.onClick.AddListener(() => UIShop.Instance.ShowShop(true));
+        RefreshAll();
     }
 
     void OnDestroy()
     {
         ResourceManager.OnCoinChanged -= SetCoin;
         ResourceManager.OnProductChanged -= SetProduct;
+        ResourceManager.OnStockChanged -= SetStock;
+        FarmManager.OnPlotChanged -= SetFarm;
 
-        productToggle.onValueChanged.RemoveListener(ShowProductDetail);
+        productToggle.onValueChanged.RemoveListener(ToggleProductDetail);
     }
     
-    private void OnEnable()
-    {
-        RefreshAll();
-    }
 
     public void RefreshAll()
     {
@@ -100,9 +107,14 @@ public class UIResourceManager : MonoBehaviour
         uIProductDetail?.ShowProductDetails(products);
     }
 
-    public void ShowProductDetail(bool on)
+    public void ToggleProductDetail(bool on)
     {
         uIProductDetail.gameObject.SetActive(on);
+    }
+
+    public void SetFarm(int activePlots, int emptyPlots, List<Plot> plots)
+    {
+        farmTxt.SetText($"Farm: {activePlots}/{activePlots + emptyPlots}");
     }
     
     private void RefreshStats()
@@ -116,18 +128,18 @@ public class UIResourceManager : MonoBehaviour
         int equipLevel = 0;
         foreach (var e in inv.GetAllEquipments())
             equipLevel = Mathf.Max(equipLevel, e.quantity);
-        equipmentLvlTxt.text = $"Equipment Lv: {equipLevel}";
+        equipmentLvlTxt.text = $"Equipment: {equipLevel}";
 
         // 3. Worker
         // int working = WorkerManager.Instance.GetWorkingCount();
         // int idle = WorkerManager.Instance.GetIdleCount();
-        // workerTxt.text = $"Workers: {working} working / {idle} idle";
+        workerTxt.text = $"Workers: {0} working / {0} idle";
 
         // 4. Seeds chưa sử dụng
         int totalSeeds = 0;
         foreach (var s in inv.GetAllSeeds())
             totalSeeds += s.quantity;
-        stockTxt.text = $"Seeds: {totalSeeds} unused";
+        stockTxt.text = $"Seeds: {totalSeeds}";
 
         // 5. Farm plots
         int used = FarmManager.Instance.GetActivePlotCount();
@@ -135,9 +147,7 @@ public class UIResourceManager : MonoBehaviour
         farmTxt.text = $"Farm: {used}/{total} used";
 
         // 6. Fruits đã thu hoạch
-        // int blueberries = inv.GetFruitCount("fruit_blueberry");
-        // int tomatoes = inv.GetFruitCount("fruit_tomato");
-        // int milk = inv.GetFruitCount("fruit_milk");
+        productTxt.text = $"Products: {0}";
     }
 
 }

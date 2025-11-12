@@ -17,7 +17,6 @@ public class CultivationData
 
     public eCropStage CropStage;
     public float growthTimer;
-    
     public int fruitCount;
     public float fruitTimer;
 
@@ -33,7 +32,8 @@ public class CultivationData
         this.CropStage = eCropStage.Seed;
         this.growthTimer = 0f;
 
-        // Load các prefab stage qua PrefabManager (Addressables)
+
+
         seed.LoadCropSteps(prefabs =>
         {
             stagePrefabs = prefabs;
@@ -95,7 +95,10 @@ public class CultivationData
         }
 
         if (fruitCount >= seed.maxFruitCount)
+        {
             CropStage = eCropStage.Withered;
+            UpdateVisual();
+        }
     }
 
     private void UpdateVisual()

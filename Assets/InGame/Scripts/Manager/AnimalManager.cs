@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class AnimalManager : Singleton<AnimalManager>
 {
-    private readonly List<AnimalUnit> activeAnimals = new();
+    [SerializeField] private List<AnimalUnit> activeAnimals = new();
     [SerializeField] private float updateInterval = 1f;
     private float timer;
 
@@ -30,11 +30,14 @@ public class AnimalManager : Singleton<AnimalManager>
         var newAnimal = new AnimalUnit(data, plot);
         activeAnimals.Add(newAnimal);
 
-        // Tạo model trong chuồng
+        GameObject animal;
         data.LoadPrefab(prefab =>
         {
             if (prefab != null)
-                Object.Instantiate(prefab, plot.transform.position + new Vector3(0, 5, 0), Quaternion.identity, plot.transform);
+            {
+                animal = Instantiate(prefab, plot.transform.position + new Vector3(0, 5, 0), Quaternion.identity, plot.transform);
+                plot.SetEntity(animal);
+            }
         });
 
         Debug.Log($"Added new {data.name} to the farm!");
@@ -44,6 +47,25 @@ public class AnimalManager : Singleton<AnimalManager>
     {
         if (unit == null) return;
         activeAnimals.Remove(unit);
+    }
+
+    public void RemoveAnimalByPlot(Plot plot)
+    {
+        if (plot == null) return;
+
+        for (int i = activeAnimals.Count - 1; i >= 0; i--)
+        {
+            AnimalUnit unit = activeAnimals[i];
+            if (unit == null || unit.plot == null) continue;
+
+            if (unit.plot == plot)
+            {
+                plot.RemoveEntity();
+                activeAnimals.RemoveAt(i);
+
+                Debug.Log($"🐮 Removed animal from plot: {plot.name}");
+            }
+        }
     }
 
     public AnimalUnit GetAnimalData(Plot plot)

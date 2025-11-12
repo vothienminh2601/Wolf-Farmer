@@ -44,14 +44,14 @@ public class AnimalCSVReader : ICSVReader<AnimalData>
             AnimalData data = new AnimalData();
             data.id = cols[0].Trim();
             data.name = cols[1].Trim();
+            int.TryParse(cols[2], out data.baseValue);
+            float.TryParse(cols[3], out data.growDuration);
+            float.TryParse(cols[4], out data.productInterval);
+            int.TryParse(cols[5], out data.maxProductCount);
 
-            float.TryParse(cols[2], out data.growDuration);
-            float.TryParse(cols[3], out data.productInterval);
-            int.TryParse(cols[4], out data.maxProductCount);
-
-            data.iconAddress = cols[5].Trim();
-            data.prefabAddress = cols[6].Trim();
-            data.productId = cols[7].Trim();
+            data.iconAddress = cols[6].Trim();
+            data.prefabAddress = cols[7].Trim();
+            data.productId = cols[8].Trim();
 
             if (!animals.ContainsKey(data.id))
                 animals.Add(data.id, data);

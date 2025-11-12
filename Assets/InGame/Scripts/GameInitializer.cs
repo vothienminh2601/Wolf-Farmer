@@ -104,7 +104,7 @@ public class GameInitializer : MonoBehaviour
         // ---------------------------------------------------------
         if (housePlot != null)
         {
-            BuilderManager.Instance.SetupPlot(housePlot, ePlotPurpose.Building, null);
+            FarmManager.Instance.SetupPlot(housePlot, ePlotPurpose.Building, null);
             BuilderManager.Instance.BuildHouse(
                 housePlot,
                 new Vector3(0, 2, 0),
@@ -119,7 +119,7 @@ public class GameInitializer : MonoBehaviour
         {
             Plot plot = kvp.Value;
             if (!cropPlots.Contains(plot) && !animalPlots.Contains(plot) && plot != housePlot)
-                BuilderManager.Instance.SetupPlot(plot, ePlotPurpose.Empty, null);
+                FarmManager.Instance.SetupPlot(plot, ePlotPurpose.Empty, null);
         }
 
         Debug.Log("✅ Setup complete: House(-1,1), Animal(1,0), Crops bottom row (-1,-1),(0,-1),(1,-1)");

@@ -20,6 +20,8 @@ public class Plot : MonoBehaviour
     private FarmManager field;
     private float spacing;
     private GameObject tilePrefab;
+    private GameObject entityPlot;
+    
     [SerializeField] private GameObject outline;
     private Material baseMaterial;
 
@@ -53,9 +55,17 @@ public class Plot : MonoBehaviour
         outline?.gameObject.SetActive(selected);
     }
 
-    // --------------------------------------------
-    // Tạo 5x5 tile cho plot này
-    // --------------------------------------------
+    public void SetEntity(GameObject entity)
+    {
+        entityPlot = entity;
+    }
+
+    public void RemoveEntity()
+    {
+        Destroy(entityPlot);
+        entityPlot = null;
+    }
+
     private void GenerateTiles()
     {
         float offsetX = (GameConfigs.TILES_PER_PLOT - 1) * spacing * 0.5f;
@@ -90,39 +100,6 @@ public class Plot : MonoBehaviour
     public void SetPurpose(ePlotPurpose purpose)
     {
         Purpose = purpose;
-
-        switch (purpose)
-        {
-            case ePlotPurpose.Farming:
-                BuildFence();
-                BuildFarmingTiles();
-                break;
-
-            case ePlotPurpose.Animal:
-                BuildFence();
-                BuildAnimalTiles();
-                break;
-
-            case ePlotPurpose.Building:
-                // reserved for later
-                break;
-        }
-    }
-
-    private void BuildFence()
-    {
-        // FenceBuilder.Instance.BuildForPlot(this);
-    }
-
-    private void BuildFarmingTiles()
-    {
-        // gán eTileType.Farming cho vùng trung tâm
-        foreach (var t in tiles) t.SetType(eTileType.Farming);
-    }
-
-    private void BuildAnimalTiles()
-    {
-        foreach (var t in tiles) t.SetType(eTileType.Animal);
     }
 
     public IEnumerable<Tile> GetAllTiles() => tiles;

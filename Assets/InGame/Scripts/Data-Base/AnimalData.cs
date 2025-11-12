@@ -5,6 +5,7 @@ public class AnimalData
 {
     public string id;
     public string name;
+    public int baseValue;
 
     public float growDuration;      // Thời gian lớn lên (từ bê thành bò)
     public float productInterval;   // Thời gian giữa 2 lần cho sản phẩm (sữa, trứng, len,...)

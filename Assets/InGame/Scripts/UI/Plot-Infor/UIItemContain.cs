@@ -42,7 +42,7 @@ public class UIItemContain : MonoBehaviour
     {
         ClearList();
 
-        // ✅ Lấy toàn bộ dữ liệu item theo loại
+        // Lấy toàn bộ dữ liệu item theo loại
         if (itemType == eItemType.Seed)
         {
             BuildSeedList(DataManager.SeedDict);
@@ -144,7 +144,6 @@ public class UIItemContain : MonoBehaviour
         targetPlot.Purpose = ePlotPurpose.Farming;
 
         ResourceManager.Instance.UseSeed(seedData.id);
-        Debug.Log($"🌾 Đã trồng {seedData.name}, còn lại {ResourceManager.Instance.GetSeedCount(seedData.id)} hạt");
 
         onClick?.Invoke();
         Hide();
@@ -164,7 +163,6 @@ public class UIItemContain : MonoBehaviour
             return;
         }
 
-        // Nếu bạn có hệ thống chuồng (pen), gọi spawn bò tại vị trí đó
         AnimalManager.Instance.AddAnimal(animalData, targetPlot);
 
         ResourceManager.Instance.UseAnimalBreed(animalData.id);

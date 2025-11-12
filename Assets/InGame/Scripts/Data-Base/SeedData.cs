@@ -6,6 +6,7 @@ public class SeedData
 {
     public string id;                     // seed_001
     public string name;                   // Tên hiển thị
+    public int baseValue;
     public float stageDuration;           // Thời gian qua mỗi stage
     public float fruitInterval;           // Khoảng thời gian giữa các lần sinh trái
     public int maxFruitCount;             // Tổng số trái cây có thể sinh ra

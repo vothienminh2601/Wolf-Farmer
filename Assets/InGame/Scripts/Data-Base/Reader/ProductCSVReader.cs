@@ -44,7 +44,7 @@ public class ProductCSVReader : ICSVReader<ProductData>
                 name = cols[1].Trim()
             };
 
-            int.TryParse(cols[2], out data.value);
+            int.TryParse(cols[2], out data.baseValue);
             data.iconAddress = cols[3].Trim();
             data.prefabAddress = cols[4].Trim();
             data.description = cols[5].Trim();

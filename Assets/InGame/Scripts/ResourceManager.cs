@@ -30,9 +30,8 @@ public class ResourceManager : MonoBehaviour
     [SerializeField] private List<ResourceStack> workers = new();
 
     public static event Action<int> OnCoinChanged;
-    public static event Action<List<ResourceStack>> OnSeedChanged;
-    public static event Action<List<ResourceStack>> OnAnimalBreedChanged;
     public static event Action<List<ResourceStack>> OnProductChanged;
+    public static event Action<List<ResourceStack>, List<ResourceStack>> OnStockChanged;
 
     [Header("Statistics")]
     [SerializeField] private int totalHarvest;
@@ -68,12 +67,12 @@ public class ResourceManager : MonoBehaviour
     // ============================================================
     public void AddSeed(string id, int amount = 1) {
         AddToList(seeds, id, amount);
-        OnSeedChanged?.Invoke(seeds);
+        OnStockChanged?.Invoke(seeds, animals);
     }
 
     public void UseSeed(string id, int amount = 1) {
         RemoveFromList(seeds, id, amount);
-        OnSeedChanged?.Invoke(seeds);
+        OnStockChanged?.Invoke(seeds, animals);
     }
     public int GetSeedCount(string id) => GetCount(seeds, id);
     public List<ResourceStack> GetAllSeeds() => seeds;
@@ -83,12 +82,12 @@ public class ResourceManager : MonoBehaviour
     // ============================================================
     public void AddAnimalBreed(string id, int amount = 1) {
         AddToList(animalBreeds, id, amount);
-        OnAnimalBreedChanged?.Invoke(animalBreeds);
+        OnStockChanged?.Invoke(seeds, animals);
     }
 
     public void UseAnimalBreed(string id, int amount = 1) {
         RemoveFromList(animalBreeds, id, amount);
-        OnAnimalBreedChanged?.Invoke(animalBreeds);
+        OnStockChanged?.Invoke(seeds, animals);
     }
     public int GetAnimalBreedCount(string id) => GetCount(animalBreeds, id);
     public List<ResourceStack> GetAllAnimalBreeds() => seeds;

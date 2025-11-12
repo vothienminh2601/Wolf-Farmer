@@ -1,6 +1,6 @@
-﻿id,name,stage_duration,fruit_interval,max_fruit_count,icon_path,crop_steps,product_id
-seed_001,Broccoli-Seed,10,10,10,Broccoli_icon,Broccoli_Step_01;Broccoli_Step_02;Broccoli_Step_03;Broccoli_Dead,product_001
-seed_002,Carrot-Seed,10,10,10,Carrot_icon,Carrot_Step_01;Carrot_Step_02;Carrot_Step_03;Carrot_Dead,product_002
-seed_003,Cauliflower-Seed,10,10,10,Cauliflower_icon,Cauliflower_Step_01;Cauliflower_Step_02;Cauliflower_Step_03;Cauliflower_Dead,product_003
-seed_004,Corn-Seed,10,10,10,Corn_icon,Corn_Step_01;Corn_Step_02;Corn_Step_03;Corn_Dead,product_004
-seed_005,Mushroom-Seed,10,10,10,Mushroom_icon,Mushroom_Step_01;Mushroom_Step_02;Mushroom_Step_03;Mushroom_Dead,product_005
+﻿id,name,base_value,stage_duration,fruit_interval,max_fruit_count,icon_path,crop_steps,product_id
+seed_001,Broccoli-Seed,50,10,10,10,Broccoli_icon,Broccoli_Step_01;Broccoli_Step_02;Broccoli_Step_03;Broccoli_Dead,product_001
+seed_002,Carrot-Seed,50,10,10,10,Carrot_icon,Carrot_Step_01;Carrot_Step_02;Carrot_Step_03;Carrot_Dead,product_002
+seed_003,Cauliflower-Seed,50,10,10,10,Cauliflower_icon,Cauliflower_Step_01;Cauliflower_Step_02;Cauliflower_Step_03;Cauliflower_Dead,product_003
+seed_004,Corn-Seed,50,10,10,10,Corn_icon,Corn_Step_01;Corn_Step_02;Corn_Step_03;Corn_Dead,product_004
+seed_005,Mushroom-Seed,50,10,10,10,Mushroom_icon,Mushroom_Step_01;Mushroom_Step_02;Mushroom_Step_03;Mushroom_Dead,product_005

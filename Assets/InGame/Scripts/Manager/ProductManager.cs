@@ -1,17 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// Quản lý tất cả trái cây spawn trong game, gắn liền với Plot.
-/// </summary>
 public class ProductManager : Singleton<ProductManager>
 {
-    // Lưu danh sách Fruit theo từng Plot
     private readonly Dictionary<Plot, List<Product>> productByPlot = new();
 
-    /// <summary>
-    /// Spawn một Fruit dựa trên FruitData và prefabAddress.
-    /// </summary>
     public void SpawnProduct(ProductData productData, Vector3 position, Plot plot)
     {
 
@@ -21,7 +14,6 @@ public class ProductManager : Singleton<ProductManager>
             return;
         }
 
-        // Load prefab qua Addressables
         PrefabManager.Instance.LoadPrefabAsync(productData.prefabAddress, prefab =>
         {
             if (prefab == null)
@@ -37,17 +29,12 @@ public class ProductManager : Singleton<ProductManager>
 
             product.Init(productData, plot);
 
-            // Thêm vào danh sách quản lý
             if (!productByPlot.ContainsKey(plot))
                 productByPlot[plot] = new List<Product>();
 
             productByPlot[plot].Add(product);
         });
     }
-
-    /// <summary>
-    /// Lấy số lượng fruit hiện có trên 1 plot.
-    /// </summary>
     public int GetProductCountByPlot(Plot plot)
     {
         if (plot == null || !productByPlot.ContainsKey(plot)) return 0;
@@ -61,9 +48,6 @@ public class ProductManager : Singleton<ProductManager>
         return count;
     }
 
-    /// <summary>
-    /// Thu hoạch tất cả fruit thuộc một plot cụ thể.
-    /// </summary>
     public void CollectByPlot(Plot plot)
     {
         if (plot == null || !productByPlot.ContainsKey(plot)) return;
@@ -79,10 +63,6 @@ public class ProductManager : Singleton<ProductManager>
         list.Clear();
         productByPlot.Remove(plot);
     }
-
-    /// <summary>
-    /// Thu hoạch tất cả fruit trong toàn bộ bản đồ.
-    /// </summary>
     public void CollectAll()
     {
         foreach (var kv in productByPlot)
@@ -98,9 +78,6 @@ public class ProductManager : Singleton<ProductManager>
         productByPlot.Clear();
     }
 
-    /// <summary>
-    /// Gọi khi fruit đã được thu hoạch (click hoặc auto).
-    /// </summary>
     public void NotifyCollected(Product product)
     {
         if (product == null || product.SourcePlot == null) return;
@@ -114,9 +91,6 @@ public class ProductManager : Singleton<ProductManager>
             productByPlot.Remove(plot);
     }
 
-    /// <summary>
-    /// Xóa toàn bộ product của một plot (khi cây bị hủy hoặc chết).
-    /// </summary>
     public void ClearPlot(Plot plot)
     {
         if (plot == null || !productByPlot.ContainsKey(plot)) return;

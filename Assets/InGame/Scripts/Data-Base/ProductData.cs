@@ -5,7 +5,7 @@ public class ProductData
 {
     public string id;               // fruit_001
     public string name;             // Tên hiển thị
-    public int value;               // Giá trị bán hoặc điểm
+    public int baseValue;               // Giá trị bán hoặc điểm
     public string iconAddress;      // Addressables key của icon
     public string prefabAddress;    // Addressables key của prefab
     public string description;      // Mô tả thêm (tuỳ chọn)

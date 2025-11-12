@@ -6,7 +6,7 @@ public class CultivationManager : Singleton<CultivationManager>
     [Header("Settings")]
     [SerializeField] private float updateInterval = 1f;
 
-    private readonly List<CultivationData> activePlots = new();
+    [SerializeField] private List<CultivationData> activePlots = new();
     private float timer;
 
     void Update()
@@ -29,11 +29,8 @@ public class CultivationManager : Singleton<CultivationManager>
                 activePlots.RemoveAt(i);
                 continue;
             }
-
+            
             data.Tick(updateInterval);
-
-            if (data.IsDead)
-                activePlots.RemoveAt(i);
         }
     }
 
