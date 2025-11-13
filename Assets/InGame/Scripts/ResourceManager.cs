@@ -67,12 +67,12 @@ public class ResourceManager : MonoBehaviour
     // ============================================================
     public void AddSeed(string id, int amount = 1) {
         AddToList(seeds, id, amount);
-        OnStockChanged?.Invoke(seeds, animals);
+        OnStockChanged?.Invoke(seeds, animalBreeds);
     }
 
     public void UseSeed(string id, int amount = 1) {
         RemoveFromList(seeds, id, amount);
-        OnStockChanged?.Invoke(seeds, animals);
+        OnStockChanged?.Invoke(seeds, animalBreeds);
     }
     public int GetSeedCount(string id) => GetCount(seeds, id);
     public List<ResourceStack> GetAllSeeds() => seeds;
@@ -82,12 +82,12 @@ public class ResourceManager : MonoBehaviour
     // ============================================================
     public void AddAnimalBreed(string id, int amount = 1) {
         AddToList(animalBreeds, id, amount);
-        OnStockChanged?.Invoke(seeds, animals);
+        OnStockChanged?.Invoke(seeds, animalBreeds);
     }
 
     public void UseAnimalBreed(string id, int amount = 1) {
         RemoveFromList(animalBreeds, id, amount);
-        OnStockChanged?.Invoke(seeds, animals);
+        OnStockChanged?.Invoke(seeds, animalBreeds);
     }
     public int GetAnimalBreedCount(string id) => GetCount(animalBreeds, id);
     public List<ResourceStack> GetAllAnimalBreeds() => seeds;

@@ -108,7 +108,7 @@ public class UIShop : Singleton<UIShop>
         {
             var data = kv.Value;
             var item = Instantiate(itemPrefab, contentParent);
-            item.Setup(data.id, data.name, data.baseValue, 0, OnValueChanged);
+            item.Setup(data.id, data.name, data.baseValue, 0, OnValueChanged, isSeed: true);
             spawnedItems.Add(item);
         }
     }

@@ -1,8 +1,11 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class CultivationManager : Singleton<CultivationManager>
 {
+
+    public static event Action OnTickCultivation;
     [Header("Settings")]
     [SerializeField] private float updateInterval = 1f;
 
@@ -29,8 +32,9 @@ public class CultivationManager : Singleton<CultivationManager>
                 activePlots.RemoveAt(i);
                 continue;
             }
-            
+
             data.Tick(updateInterval);
+            OnTickCultivation?.Invoke();
         }
     }
 

@@ -102,6 +102,6 @@ public class Plot : MonoBehaviour
         Purpose = purpose;
     }
 
-    public IEnumerable<Tile> GetAllTiles() => tiles;
+    public List<Tile> GetAllTiles() => tiles;
     public Tile GetTile(int x, int z) => tiles.Find(t => t.X == x && t.Z == z);
 }

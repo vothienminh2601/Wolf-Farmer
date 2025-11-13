@@ -70,10 +70,7 @@ public class InputManager : MonoBehaviour
                 {
                     SelectPlot(plotOfTile);
                     
-                    cameraController.FocusOn(plotOfTile);
                     isFocusedOnPlot = true;
-                    uIPlotInfor?.Show(plotOfTile);
-                    OnPlotClicked?.Invoke(plotOfTile);
                     DeselectTile();
                     return;
                 }
@@ -92,21 +89,23 @@ public class InputManager : MonoBehaviour
             // click ra ngoài → hủy chọn
             DeselectTile();
             DeselectPlot();
-            uIPlotInfor?.Hide();
-            cameraController.ResetCamera();
         }
     }
     // -------------------------------------------------------------
     // TILE SELECTION MANAGEMENT
     // -------------------------------------------------------------
 
-    private void SelectPlot(Plot Plot)
+    public void SelectPlot(Plot Plot)
     {
         if (selectedPlot == Plot) return; // click lại cùng Plot
         DeselectPlot(); // hủy Plot cũ
 
         selectedPlot = Plot;
         selectedPlot.Select(true);
+
+        uIPlotInfor?.Show(Plot);
+        OnPlotClicked?.Invoke(Plot);
+        cameraController.FocusOn(Plot);
     }
 
     private void DeselectPlot()
@@ -115,6 +114,8 @@ public class InputManager : MonoBehaviour
         {
             selectedPlot.Select(false);
             selectedPlot = null;
+            uIPlotInfor?.Hide();
+            cameraController.ResetCamera();
         }
     }
 

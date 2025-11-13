@@ -7,7 +7,8 @@ public class UIFarmingInfor : MonoBehaviour
     [Header("UI References")]
     [SerializeField] private TMP_Text cropTxt;
     [SerializeField] private TMP_Text stageTxt;
-    [SerializeField] private TMP_Text fruitTxt;
+    [SerializeField] private TMP_Text productTxt;
+    [SerializeField] private TMP_Text spawnTimeTxt;
     [SerializeField] private TMP_Text unharvestTxt;
     [SerializeField] private Slider stageSlider;
     [SerializeField] private Slider spawnSlider;
@@ -36,16 +37,17 @@ public class UIFarmingInfor : MonoBehaviour
     {
         if (currentData == null || currentData.seed == null) return;
 
-        cropTxt.text = $"Crop: {currentData.seed.name}";
+        cropTxt.text = $"Crop: {currentData.seed.name.Split("-")[0]}";
         stageTxt.text = $"{currentData.CropStage}";
 
         float stageProgress = currentData.IsMature ? 1f : currentData.growthTimer / currentData.seed.stageDuration;
         stageSlider.value = stageProgress;
 
-        fruitTxt.text = $"Fruit: {currentData.fruitCount}/{currentData.seed.maxFruitCount}";
+        productTxt.text = $"Product: {currentData.fruitCount}/{currentData.seed.maxFruitCount}";
 
         float spawnProgress = currentData.IsMature ? currentData.fruitTimer / currentData.seed.fruitInterval : 0f;
         spawnSlider.value = spawnProgress;
+        spawnTimeTxt.text = $"{currentData.GetTimeToNextProduct()}";
 
         int unharvested = ProductManager.Instance.GetProductCountByPlot(currentData.plot);
         unharvestTxt.text = $"Unharvested: {unharvested}";

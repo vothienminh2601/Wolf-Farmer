@@ -9,6 +9,7 @@ public class UIAnimalInfo : MonoBehaviour
     [SerializeField] private TMP_Text animalTxt;
     [SerializeField] private TMP_Text stageTxt;
     [SerializeField] private TMP_Text productTxt;
+    [SerializeField] private TMP_Text spawnTimeTxt;
     [SerializeField] private TMP_Text unharvestTxt;
     [SerializeField] private Slider stageSlider;
     [SerializeField] private Slider spawnSlider;
@@ -41,10 +42,11 @@ public class UIAnimalInfo : MonoBehaviour
         // float stageProgress = unit.IsAdult ? 1f : unit.growTimer / unit.;
         // stageSlider.value = stageProgress;
 
-        productTxt.text = $"Fruit: {unit.productCount}/{unit.data.maxProductCount}";
+        productTxt.text = $"Product: {unit.productCount}/{unit.data.maxProductCount}";
 
         float spawnProgress = unit.IsAdult ? unit.productTimer / unit.data.productInterval : 0f;
         spawnSlider.value = spawnProgress;
+        spawnTimeTxt.text = $"{unit.GetTimeToNextProduct()}";
 
         int unharvested = ProductManager.Instance.GetProductCountByPlot(unit.plot);
         unharvestTxt.text = $"Unharvested: {unharvested}";

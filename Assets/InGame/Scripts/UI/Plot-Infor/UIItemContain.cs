@@ -133,21 +133,36 @@ public class UIItemContain : MonoBehaviour
     {
         if (targetPlot == null || seedData == null) return;
 
-        if (quantity <= 0)
+        // Lấy danh sách tile trống trong plot
+        List<Tile> emptyTiles = targetPlot.GetAllTiles().FindAll(t => !t.IsOccupied && t.Type == eTileType.Farming);
+        int emptyTileCount = emptyTiles.Count;
+
+        if (emptyTileCount <= 0)
         {
-            Debug.LogWarning($"Không đủ hạt {seedData.name} để trồng");
+            Debug.LogWarning($"Plot {targetPlot.name} không có ô đất trống nào để trồng!");
             return;
         }
 
-        // Trồng cây
+        // Kiểm tra xem người chơi có đủ hạt không
+        if (quantity < emptyTileCount)
+        {
+            Debug.LogWarning($"Không đủ hạt {seedData.name} để trồng ({quantity}/{emptyTileCount})");
+            return;
+        }
+
+        // Nếu đủ → trồng cây
         CultivationManager.Instance.RegisterCropPlot(targetPlot, seedData);
         targetPlot.Purpose = ePlotPurpose.Farming;
 
-        ResourceManager.Instance.UseSeed(seedData.id);
+        // Trừ đúng số lượng hạt cần thiết
+        ResourceManager.Instance.UseSeed(seedData.id, emptyTileCount);
+
+        Debug.Log($"🌾 Đã trồng {seedData.name} trên {emptyTileCount} ô, còn lại {ResourceManager.Instance.GetSeedCount(seedData.id)} hạt");
 
         onClick?.Invoke();
         Hide();
     }
+
 
     private void OnSelectAnimal(AnimalData animalData, int quantity)
     {

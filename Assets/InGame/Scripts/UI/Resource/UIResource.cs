@@ -13,12 +13,14 @@ public class UIResourceManager : MonoBehaviour
     [SerializeField] private TMP_Text equipmentLvlTxt;
     [SerializeField] private TMP_Text workerTxt;
     [SerializeField] private TMP_Text farmTxt;
-    [SerializeField] private Toggle productToggle;
+    [SerializeField] private Toggle productToggle, farmToggle, stockToggle;
 
     [SerializeField] private Button shopBtn;
 
 
     [SerializeField] private UIProductDetail uIProductDetail;
+    [SerializeField] private UIFarmDetail uIFarmDetail;
+    [SerializeField] private UIStockDetail uIStockDetail;
 
 
     void Awake()
@@ -27,17 +29,26 @@ public class UIResourceManager : MonoBehaviour
         ResourceManager.OnProductChanged += SetProduct;
         ResourceManager.OnStockChanged += SetStock;
         FarmManager.OnPlotChanged += SetFarm;
+        CultivationManager.OnTickCultivation += SetFarmDetail;
 
+        uIStockDetail.gameObject.SetActive(false);
+        stockToggle.isOn = false;
         uIProductDetail.gameObject.SetActive(false);
         productToggle.isOn = false;
+        uIFarmDetail.gameObject.SetActive(false);
+        farmToggle.isOn = false;
     }
 
     void Start()
     {
         productToggle.onValueChanged.AddListener(ToggleProductDetail);
+        farmToggle.onValueChanged.AddListener(ToggleFarmDetail);
+        stockToggle.onValueChanged.AddListener(ToggleStockDetail);
         shopBtn.onClick.AddListener(() => UIShop.Instance.ShowShop(true));
         RefreshAll();
+
     }
+    
 
     void OnDestroy()
     {
@@ -45,8 +56,11 @@ public class UIResourceManager : MonoBehaviour
         ResourceManager.OnProductChanged -= SetProduct;
         ResourceManager.OnStockChanged -= SetStock;
         FarmManager.OnPlotChanged -= SetFarm;
+        CultivationManager.OnTickCultivation -= SetFarmDetail;
 
         productToggle.onValueChanged.RemoveListener(ToggleProductDetail);
+        farmToggle.onValueChanged.RemoveListener(ToggleFarmDetail);
+        stockToggle.onValueChanged.RemoveListener(ToggleStockDetail);
     }
     
 
@@ -87,6 +101,7 @@ public class UIResourceManager : MonoBehaviour
         }
 
         stockTxt.SetText($"Stock: {totalSeeds + totalAnimals}");
+        uIStockDetail?.ShowStockDetail(seeds, animalBreeds);
     }
 
     void SetProduct(List<ResourceStack> products)
@@ -104,7 +119,12 @@ public class UIResourceManager : MonoBehaviour
         }
         productTxt.SetText($"Product: {totalProducts}");
 
-        uIProductDetail?.ShowProductDetails(products);
+        uIProductDetail?.UpdateProductDetails(products);
+    }
+
+    public void ToggleStockDetail(bool on)
+    {
+        uIStockDetail.gameObject.SetActive(on);
     }
 
     public void ToggleProductDetail(bool on)
@@ -112,9 +132,20 @@ public class UIResourceManager : MonoBehaviour
         uIProductDetail.gameObject.SetActive(on);
     }
 
+    public void ToggleFarmDetail(bool on)
+    {
+        uIFarmDetail.gameObject.SetActive(on);
+    }
+
     public void SetFarm(int activePlots, int emptyPlots, List<Plot> plots)
     {
         farmTxt.SetText($"Farm: {activePlots}/{activePlots + emptyPlots}");
+        uIFarmDetail?.ShowDetails();
+    }
+
+    public void SetFarmDetail()
+    {
+        uIFarmDetail?.ShowDetails();
     }
     
     private void RefreshStats()

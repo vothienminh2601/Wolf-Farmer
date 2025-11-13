@@ -111,7 +111,7 @@ public class FarmManager : Singleton<FarmManager>
         }
 
         OnPlotChanged?.Invoke(GetActivePlotCount(), GetEmptyPlotCount(), farmPlots);
-        Debug.Log($"✅ SetupPlot: {name} tại ({plot.PlotX},{plot.PlotZ})");
+        Debug.Log($"SetupPlot: {name} tại ({plot.PlotX},{plot.PlotZ})");
     }
 
 
@@ -148,17 +148,44 @@ public class FarmManager : Singleton<FarmManager>
     public int GetTotalPlotCount() => _plots.Count;
     public int GetActivePlotCount() => _plots.Count(p => p.Value.Purpose != ePlotPurpose.Empty);
     public int GetEmptyPlotCount() => _plots.Count(p => p.Value.Purpose == ePlotPurpose.Empty);
-    public int GetPlotCountByEnum(ePlotPurpose purpose)
+    public List<Plot> GetEmptyPlots()
     {
-        int count = 0;
-        foreach (var plot in _plots)
+        List<Plot> result = new();
+        foreach (var p in _plots.Values)
         {
-            if (plot.Value == null) continue;
-            if (plot.Value.Purpose == purpose)
-                count++;
+            if (p == null) continue;
+            if (p.Purpose == ePlotPurpose.Empty)
+                result.Add(p);
         }
-        return count;
+        return result;
     }
+
+
+    public List<Plot> GetFarmingPlots()
+    {
+        List<Plot> result = new();
+        foreach (var p in _plots.Values)
+        {
+            if (p == null) continue;
+            if (p.Purpose == ePlotPurpose.Farming)
+                result.Add(p);
+        }
+        return result;
+    }
+
+
+    public List<Plot> GetAnimalPlots()
+    {
+        List<Plot> result = new();
+        foreach (var p in _plots.Values)
+        {
+            if (p == null) continue;
+            if (p.Purpose == ePlotPurpose.Animal)
+                result.Add(p);
+        }
+        return result;
+    }
+
     
     public Plot GetPlot(Vector2Int coord)
     {

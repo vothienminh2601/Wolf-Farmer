@@ -40,6 +40,11 @@ public class AnimalUnit
         }
     }
 
+    public float GetTimeToNextProduct()
+    {
+        return data.productInterval - productTimer;
+    }
+
     private void Produce()
     {
         productCount++;

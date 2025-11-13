@@ -1,8 +1,8 @@
 ﻿id,name,value,"icon_path	",prefab_path,description
-product_001,Broccoli,50,Broccoli_icon,Broccoli_Crop,A fresh broccoli
-product_002,Carrot,51,Carrot_icon,Carrot_Crop,A fresh broccoli
-product_003,Cauliflower,52,Cauliflower_icon,Cauliflower_Crop,A fresh broccoli
-product_004,Corn,53,Corn_icon,Corn_Crop,A fresh broccoli
-product_005,Mushroom,54,Mushroom_icon,Mushroom_Crop,A fresh broccoli
-product_006,Milk,55,Milk_icon,Milk,A fresh broccoli
-product_007,Egg,56,Egg_icon,Egg,A fresh broccoli
+product_001,Broccoli,5,Broccoli_icon,Broccoli_Crop,A fresh broccoli
+product_002,Carrot,8,Carrot_icon,Carrot_Crop,A fresh broccoli
+product_003,Cauliflower,5,Cauliflower_icon,Cauliflower_Crop,A fresh broccoli
+product_004,Corn,6,Corn_icon,Corn_Crop,A fresh broccoli
+product_005,Mushroom,5,Mushroom_icon,Mushroom_Crop,A fresh broccoli
+product_006,Milk,15,Milk_icon,Milk,A fresh broccoli
+product_007,Egg,7,Egg_icon,Egg,A fresh broccoli

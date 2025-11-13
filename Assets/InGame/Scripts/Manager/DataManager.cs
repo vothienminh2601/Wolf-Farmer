@@ -76,9 +76,22 @@ public class DataManager : Singleton<DataManager>
         return null;
     }
 
-    /// <summary>
-    /// Lấy dữ liệu Fruit theo ID.
-    /// </summary>
+    public static AnimalData GetAnimalById(string id)
+    {
+        if (string.IsNullOrEmpty(id))
+        {
+            Debug.LogWarning("GetAnimalById: id trống hoặc null");
+            return null;
+        }
+
+        if (AnimalDict.TryGetValue(id, out var animal))
+            return animal;
+
+        Debug.LogWarning($"Animal ID '{id}' không tồn tại trong DataManager.");
+        return null;
+    }
+
+
     public static ProductData GetProductById(string id)
     {
         if (string.IsNullOrEmpty(id))

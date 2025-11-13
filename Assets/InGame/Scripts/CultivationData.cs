@@ -22,7 +22,12 @@ public class CultivationData
 
     public bool IsMature => CropStage == eCropStage.Mature;
     public bool IsDead => CropStage == eCropStage.Withered;
-
+    public string State()
+    {
+        if (IsDead) return "Dead";
+        return CropStage.ToString();
+    }
+    
     private List<GameObject> stagePrefabs = new();
 
     public CultivationData(Plot plot, SeedData seed)
@@ -31,8 +36,6 @@ public class CultivationData
         this.seed = seed;
         this.CropStage = eCropStage.Seed;
         this.growthTimer = 0f;
-
-
 
         seed.LoadCropSteps(prefabs =>
         {
@@ -63,6 +66,11 @@ public class CultivationData
                 SpawnFruit();
             }
         }
+    }
+    
+    public float GetTimeToNextProduct()
+    {
+        return seed.fruitInterval - fruitTimer;
     }
 
     private void AdvanceStage()
