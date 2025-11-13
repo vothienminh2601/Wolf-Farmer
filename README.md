@@ -1,6 +1,10 @@
 Một game mô phỏng nông trại được phát triển trong Unity — nơi người chơi có thể **trồng cây, chăn nuôi, thu hoạch, mở rộng đất và quản lý tài nguyên**.
 Link Video Demo: https://drive.google.com/file/d/1aA5BCE_Ov8Io9aFN2CIz2I8DVWDIygiU/view?usp=sharing
 
+
+## 🧭 Tổng quan
+Dữ liệu game (Seed, Fruit, Animal, v.v.) được quản lý thông qua **CSV** thay vì ScriptableObject, giúp **dễ bảo trì và chỉnh sửa cho Game Designer (GD)**.
+
 📖 Hướng dẫn chơi cơ bản
 🌱 1. Trồng cây
 - Click vào 1 mảnh đất trống.
@@ -39,9 +43,6 @@ Link Video Demo: https://drive.google.com/file/d/1aA5BCE_Ov8Io9aFN2CIz2I8DVWDIyg
 - Trick Test nhanh (Dev Mode)
 - Nhấn nút ⬆ / ⬇ (Arrow Key) ==> Tăng / giảm Time.timeScale để tăng tốc game
 - Nhấn nút C => Tăng +100 coin ngay lập tức
-
-## 🧭 Tổng quan
-Dữ liệu game (Seed, Fruit, Animal, v.v.) được quản lý thông qua **CSV** thay vì ScriptableObject, giúp **dễ bảo trì và chỉnh sửa cho Game Designer (GD)**.
 
 ## Tính năng đã hoàn thành
 ### 🌱 **Hệ thống trồng trọt (Cultivation System)**
@@ -96,15 +97,17 @@ Dữ liệu game (Seed, Fruit, Animal, v.v.) được quản lý thông qua **CS
 - Mỗi lần nâng cấp tốn 500 coin.
 
 
-Ghi chú & Hạn chế hiện tại
+## Ghi chú & Hạn chế hiện tại
 Phần chưa hoàn thiện
 - Worker hiện vẫn chưa thể tự động trồng cây, thu hoạch, mới chỉ di chuyển được.
+- Chưa animation cho cây, trái, worker, UI...
+- Chưa polish UI / VFX / feedback, còn đơn giản.
+
 - Khi tắt game và mở lại:
   + Chỉ mới load được tài nguyên (coin, seed, product).
   + Chưa load lại cây trồng, vật nuôi, trạng thái các plot.
 
-- Một số lưu ý
-*** Các thông số như giá bán, tốc độ tăng trưởng, thời gian sinh sản, số lần thu hoạch có thể điều chỉnh trực tiếp trong file CSV để cân bằng game.
+- Một số lưu ý: Các thông số như giá bán, tốc độ tăng trưởng, thời gian sinh sản, số lần thu hoạch có thể điều chỉnh trực tiếp trong file CSV để cân bằng game.
 
 🌱 Do hạn chế asset có sẵn, một số cây trồng không giống hoàn toàn với yêu cầu đề bài.
 
