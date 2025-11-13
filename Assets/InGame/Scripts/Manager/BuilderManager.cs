@@ -26,7 +26,7 @@ public class BuilderManager : Singleton<BuilderManager>
 
         plot.name = $"House Plot ({plot.PlotX},{plot.PlotZ})";
         Debug.Log($"House built at plot ({plot.PlotX},{plot.PlotZ})");
-
+        // FarmManager.Instance.BuildNavMesh();
     }
 
     public void BuildCultivationPlot(Plot plot)
@@ -163,6 +163,10 @@ public class BuilderManager : Singleton<BuilderManager>
             if (hasRight && z == mid) continue;
             plot.GetTile(n - 1, z)?.PlaceObject(fenceIPrefab, Vector3.zero, Quaternion.Euler(0, -90, 0));
         }
+
+        Debug.Log("Build Fence");
+
+        // FarmManager.Instance.BuildNavMesh();
     }
 
     public void ClearPlot(Plot plot)

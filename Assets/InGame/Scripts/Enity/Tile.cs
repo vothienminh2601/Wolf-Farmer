@@ -56,9 +56,6 @@ public class Tile : MonoBehaviour
         UpdateVisual();
     }
 
-    // -------------------------------------------------------------
-    // Đặt vật thể lên tile (chỉ khi rỗng)
-    // -------------------------------------------------------------
     public bool PlaceObject(GameObject prefab, Vector3 pos = default, Quaternion rot = default)
     {
         if (IsOccupied)
@@ -76,9 +73,6 @@ public class Tile : MonoBehaviour
         return true;
     }
 
-    // -------------------------------------------------------------
-    // Xóa vật thể khỏi tile
-    // -------------------------------------------------------------
 
     public void Select(bool selected)
     {

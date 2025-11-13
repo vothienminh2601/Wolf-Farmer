@@ -40,12 +40,12 @@ public class UIFarmingInfor : MonoBehaviour
         cropTxt.text = $"Crop: {currentData.seed.name.Split("-")[0]}";
         stageTxt.text = $"{currentData.CropStage}";
 
-        float stageProgress = currentData.IsMature ? 1f : currentData.growthTimer / currentData.seed.stageDuration;
+        float stageProgress = currentData.IsMature ? 1f : currentData.growthTimer / currentData.GetTimeStage();
         stageSlider.value = stageProgress;
 
         productTxt.text = $"Product: {currentData.fruitCount}/{currentData.seed.maxFruitCount}";
 
-        float spawnProgress = currentData.IsMature ? currentData.fruitTimer / currentData.seed.fruitInterval : 0f;
+        float spawnProgress = currentData.IsMature ? currentData.fruitTimer / currentData.GetTimeInterval() : 0f;
         spawnSlider.value = spawnProgress;
         spawnTimeTxt.text = $"{TimeUtility.FormatTime((int)(currentData.GetTimeToNextProduct()))}";
 

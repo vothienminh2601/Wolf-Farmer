@@ -51,7 +51,7 @@ public class CultivationData
         if (CropStage != eCropStage.Mature)
         {
             growthTimer += deltaTime;
-            if (growthTimer >= seed.stageDuration)
+            if (growthTimer >= GetTimeStage())
             {
                 growthTimer = 0f;
                 AdvanceStage();
@@ -60,17 +60,27 @@ public class CultivationData
         else
         {
             fruitTimer += deltaTime;
-            if (fruitTimer >= seed.fruitInterval)
+            if (fruitTimer >= GetTimeInterval())
             {
                 fruitTimer = 0f;
                 SpawnFruit();
             }
         }
     }
+
+    public float GetTimeStage()
+    {
+        return seed.stageDuration / EquipmentManager.Instance.Efficiency;
+    }
+
+    public float GetTimeInterval()
+    {
+        return seed.fruitInterval / EquipmentManager.Instance.Efficiency;
+    }
     
     public float GetTimeToNextProduct()
     {
-        return seed.fruitInterval - fruitTimer;
+        return GetTimeInterval() - fruitTimer;
     }
 
     private void AdvanceStage()

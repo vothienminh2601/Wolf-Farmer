@@ -135,6 +135,7 @@ public class UserData : Singleton<UserData>
     {
         GameSaveData gameSave = new GameSaveData();
         gameSave.resourceData = ResourceManager.Instance.GetSaveData();
+        gameSave.farmSaveData = FarmManager.Instance.GetSaveData();
         SetData("gameSave", gameSave);
         SaveLastSavedTime();
     }
@@ -144,10 +145,13 @@ public class UserData : Singleton<UserData>
     public void LoadGame()
     {
         var gameSave = GetData<GameSaveData>("gameSave");
-        if (gameSave != null)
-            ResourceManager.Instance.LoadFromSave(gameSave.resourceData);
-    }
 
+        if (gameSave == null) return;
+
+        if(gameSave.resourceData != null) ResourceManager.Instance.LoadFromSave(gameSave.resourceData);
+
+        Debug.Log("✅ Game loaded successfully!");
+    }
     #endregion
 
 }

@@ -28,10 +28,10 @@ public class GameInitializer : MonoBehaviour
     {
         GenerateFarm();
         SetupInitialObjects();
-
-        UserData.Instance.LoadUserProfile(profile =>
+        UserData.Instance.LoadUserProfile(hasProfile =>
         {
-            UserData.Instance.LoadGame(); // giờ mới khôi phục dữ liệu
+            Debug.Log("📂 Found existing profile → loading game...");
+            UserData.Instance.LoadGame();
         });
     }
 
@@ -86,27 +86,15 @@ public class GameInitializer : MonoBehaviour
                 animalPlots.Add(plot);
         }
 
-        // ---------------------------------------------------------
+
         // Plot trồng trọt
-        // ---------------------------------------------------------
         foreach (var p in cropPlots)
         {
             BuilderManager.Instance.BuildFence(p);
-            BuilderManager.Instance.BuildCropPlot(p);
+            BuilderManager.Instance.BuildCultivationPlot(p);
         }
 
-        // ---------------------------------------------------------
-        // Plot chăn nuôi
-        // ---------------------------------------------------------
-        foreach (var p in animalPlots)
-        {
-            BuilderManager.Instance.BuildFence(p);
-            BuilderManager.Instance.BuildAnimalPlot(p);
-        }
-
-        // ---------------------------------------------------------
         // Nhà
-        // ---------------------------------------------------------
         if (housePlot != null)
         {
             FarmManager.Instance.SetupPlot(housePlot, ePlotPurpose.Building, null);
@@ -116,10 +104,7 @@ public class GameInitializer : MonoBehaviour
                 Quaternion.Euler(0, 180, 0)
             );
         }
-
-        // ---------------------------------------------------------
         // Các plot trống còn lại
-        // ---------------------------------------------------------
         foreach (var kvp in fieldManager.Plots)
         {
             Plot plot = kvp.Value;

@@ -32,7 +32,7 @@ public class AnimalUnit
         else
         {
             productTimer += deltaTime;
-            if (productTimer >= data.productInterval)
+            if (productTimer >= GetTimeInterval())
             {
                 productTimer = 0f;
                 Produce();
@@ -40,9 +40,15 @@ public class AnimalUnit
         }
     }
 
+    public float GetTimeInterval()
+    {
+        return data.productInterval / EquipmentManager.Instance.Efficiency;
+    }
+    
+
     public float GetTimeToNextProduct()
     {
-        return data.productInterval - productTimer;
+        return GetTimeInterval() - productTimer;
     }
 
     private void Produce()

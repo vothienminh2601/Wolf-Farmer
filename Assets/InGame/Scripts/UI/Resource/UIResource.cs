@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Text;
+using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,7 +14,7 @@ public class UIResourceManager : MonoBehaviour
     [SerializeField] private TMP_Text equipmentLvlTxt;
     [SerializeField] private TMP_Text workerTxt;
     [SerializeField] private TMP_Text farmTxt;
-    [SerializeField] private Toggle productToggle, farmToggle, stockToggle;
+    [SerializeField] private Toggle productToggle, farmToggle, stockToggle, equipmentToggle;
 
     [SerializeField] private Button shopBtn;
 
@@ -21,6 +22,7 @@ public class UIResourceManager : MonoBehaviour
     [SerializeField] private UIProductDetail uIProductDetail;
     [SerializeField] private UIFarmDetail uIFarmDetail;
     [SerializeField] private UIStockDetail uIStockDetail;
+    [SerializeField] private UIEquipmentDetail uIEquipmentDetail;
 
 
     void Awake()
@@ -32,6 +34,7 @@ public class UIResourceManager : MonoBehaviour
         CultivationManager.OnTickCultivation += SetFarmDetail;
         AnimalManager.OnTickCultivation += SetFarmDetail;
         ResourceManager.OnResourceChanged += RefreshStats;
+        EquipmentManager.OnUpgrade += SetEquipment;
 
         uIStockDetail.gameObject.SetActive(false);
         stockToggle.isOn = false;
@@ -39,6 +42,8 @@ public class UIResourceManager : MonoBehaviour
         productToggle.isOn = false;
         uIFarmDetail.gameObject.SetActive(false);
         farmToggle.isOn = false;
+        uIEquipmentDetail.gameObject.SetActive(false);
+        equipmentToggle.isOn = false;
     }
 
     void Start()
@@ -46,6 +51,7 @@ public class UIResourceManager : MonoBehaviour
         productToggle.onValueChanged.AddListener(ToggleProductDetail);
         farmToggle.onValueChanged.AddListener(ToggleFarmDetail);
         stockToggle.onValueChanged.AddListener(ToggleStockDetail);
+        equipmentToggle.onValueChanged.AddListener(ToggleEquipmentDetail);
         shopBtn.onClick.AddListener(() => UIShop.Instance.ShowShop(true));
         RefreshStats();
     }
@@ -59,6 +65,7 @@ public class UIResourceManager : MonoBehaviour
         FarmManager.OnPlotChanged -= SetFarm;
         CultivationManager.OnTickCultivation -= SetFarmDetail;
         ResourceManager.OnResourceChanged -= RefreshStats;
+        EquipmentManager.OnUpgrade -= SetEquipment;
 
 
         productToggle.onValueChanged.RemoveListener(ToggleProductDetail);
@@ -119,6 +126,13 @@ public class UIResourceManager : MonoBehaviour
         uIProductDetail?.UpdateProductDetails(products);
     }
 
+    void SetEquipment(int level, float efficency)
+    {
+        equipmentLvlTxt.SetText($"Equipment: Lv.{level}");
+
+        uIEquipmentDetail?.SetEfficency(efficency);
+    }
+
     public void ToggleStockDetail(bool on)
     {
         uIStockDetail.gameObject.SetActive(on);
@@ -132,6 +146,11 @@ public class UIResourceManager : MonoBehaviour
     public void ToggleFarmDetail(bool on)
     {
         uIFarmDetail.gameObject.SetActive(on);
+    }
+
+    public void ToggleEquipmentDetail(bool on)
+    {
+        uIEquipmentDetail.gameObject.SetActive(on);
     }
 
     public void SetFarm(int activePlots, int emptyPlots, List<Plot> plots)
@@ -149,15 +168,13 @@ public class UIResourceManager : MonoBehaviour
     {
         var resource = ResourceManager.Instance;
         var farm = FarmManager.Instance;
+        var equipment = EquipmentManager.Instance;
 
         // 1. Coin
         coinTxt.text = $"Coin: {resource.GetCoin()}";
 
         // 2. Equipment leveL
-        int equipLevel = 0;
-        foreach (var e in resource.GetAllEquipments())
-            equipLevel = Mathf.Max(equipLevel, e.quantity);
-        equipmentLvlTxt.text = $"Equipment: {equipLevel}";
+        SetEquipment(equipment.Level, equipment.Efficiency);
 
         // 3. Worker
         // int working = WorkerManager.Instance.GetWorkingCount();

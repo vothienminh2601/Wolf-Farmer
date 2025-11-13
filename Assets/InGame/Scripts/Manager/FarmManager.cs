@@ -14,9 +14,6 @@ public class FarmManager : Singleton<FarmManager>
     [SerializeField] private int plotsPerRow = 3;
     [SerializeField] private float plotGap = 1f;
 
-    [Header("Expand Settings")]
-    [SerializeField] private int baseExpandCost = 500;
-    [SerializeField] private float costMultiplier = 1.5f;
 
     [Header("Runtime Data")]
     [SerializeField] private List<Plot> farmPlots = new();
@@ -59,7 +56,7 @@ public class FarmManager : Singleton<FarmManager>
         }
 
         CreatePlotAt(nextCoord);
-        SaveExpandedFarm();
+        UserData.Instance.SaveGame();
 
         Debug.Log($"Mở rộng farm: thêm Plot_{nextCoord.x}_{nextCoord.y} với giá {cost} coin");
     }
@@ -113,7 +110,7 @@ public class FarmManager : Singleton<FarmManager>
         }
 
         BuildNavMesh();
-        SaveExpandedFarm();
+        UserData.Instance.SaveGame();
         Debug.Log($"FarmField: sinh {_plots.Count} plot ({plotsPerRow}x{plotsPerRow}) thành công!");
     }
 
@@ -146,31 +143,6 @@ public class FarmManager : Singleton<FarmManager>
         }
 
         farmPlots.Add(plot);
-    }
-
-    public void SaveExpandedFarm()
-    {
-        List<Vector2Int> coords = _plots.Keys.ToList();
-        UserData.Instance.SetData("farm_plots", coords);
-    }
-
-    public void LoadExpandedFarm()
-    {
-        var coords = UserData.Instance.GetData<List<Vector2Int>>("farm_plots");
-        if (coords == null || coords.Count == 0)
-        {
-            GenerateInitialPlots();
-            return;
-        }
-
-        foreach (var coord in coords)
-        {
-            if (!_plots.ContainsKey(coord))
-                CreatePlotAt(coord);
-        }
-
-        BuildNavMesh();
-        Debug.Log($"✅ Loaded {coords.Count} farm plots from save.");
     }
 
     public void SetupPlot(Plot plot, ePlotPurpose purpose, GameObject markerPrefab = null,
@@ -283,4 +255,131 @@ public class FarmManager : Singleton<FarmManager>
         _plots.TryGetValue(coord, out var plot);
         return plot;
     }
+
+
+
+    #region SAVE / LOAD FARM STATE
+    public FarmSaveData GetSaveData()
+    {
+        FarmSaveData data = new();
+
+        foreach (var kv in _plots)
+        {
+            Plot plot = kv.Value;
+            if (plot == null) continue;
+
+            PlotSaveData pData = new()
+            {
+                plotX = plot.PlotX,
+                plotZ = plot.PlotZ,
+                purpose = plot.Purpose
+            };
+
+            // --- Nếu là cây trồng ---
+            if (plot.Purpose == ePlotPurpose.Farming)
+            {
+                var c = CultivationManager.Instance.GetCultivationData(plot);
+                if (c != null && c.seed != null)
+                {
+                    pData.cultivation = new CultivationSaveData()
+                    {
+                        seedId = c.seed.id,
+                        stage = c.CropStage,
+                        growthTimer = c.growthTimer,
+                        fruitCount = c.fruitCount,
+                        fruitTimer = c.fruitTimer
+                    };
+                }
+            }
+
+            // --- Nếu là vật nuôi ---
+            if (plot.Purpose == ePlotPurpose.Animal)
+            {
+                var a = AnimalManager.Instance.GetAnimalData(plot);
+                if (a != null && a.data != null)
+                {
+                    pData.animal = new AnimalSaveData()
+                    {
+                        animalId = a.data.id,
+                        growthTimer = a.growTimer,
+                        productCount = a.productCount,
+                        isAdult = a.IsAdult
+                    };
+                }
+            }
+
+            data.plots.Add(pData);
+        }
+
+        Debug.Log($"✅ FarmManager: Collected save data with {data.plots.Count} plots.");
+        return data;
+    }
+
+
+    public void LoadFromSave(FarmSaveData data)
+    {
+        if (data == null || data.plots.Count == 0)
+        {
+            Debug.Log("FarmManager: No farm data found, generating new plots.");
+            GenerateInitialPlots();
+            return;
+        }
+
+        // Dọn farm hiện tại
+        foreach (var kv in _plots)
+            if (kv.Value != null)
+                Destroy(kv.Value.gameObject);
+
+        _plots.Clear();
+        farmPlots.Clear();
+
+        foreach (var pData in data.plots)
+        {
+            Vector2Int coord = new(pData.plotX, pData.plotZ);
+            CreatePlotAt(coord);
+            Plot plot = _plots[coord];
+            plot.SetPurpose(pData.purpose);
+
+
+            if (pData.cultivation != null)
+            {
+                var seed = DataManager.GetSeedById(pData.cultivation.seedId);
+                if (seed != null)
+                {
+                    CultivationManager.Instance.RegisterCropPlot(plot, seed);
+                    BuilderManager.Instance.BuildFence(plot);
+
+                    var cData = CultivationManager.Instance.GetCultivationData(plot);
+                    if (cData != null)
+                    {
+                        cData.CropStage = pData.cultivation.stage;
+                        cData.growthTimer = pData.cultivation.growthTimer;
+                        cData.fruitCount = pData.cultivation.fruitCount;
+                        cData.fruitTimer = pData.cultivation.fruitTimer;
+                    }
+                }
+            }
+
+            if (pData.animal != null)
+            {
+                var animal = DataManager.GetAnimalById(pData.animal.animalId);
+                if (animal != null)
+                {
+                    AnimalManager.Instance.AddAnimal(animal, plot);
+                    BuilderManager.Instance.BuildFence(plot);
+                    var aData = AnimalManager.Instance.GetAnimalData(plot);
+                    if (aData != null)
+                    {
+                        aData.growTimer = pData.animal.growthTimer;
+                        aData.productCount = pData.animal.productCount;
+                    }
+                }
+            }
+        }
+
+        BuildNavMesh();
+        Debug.Log($"✅ FarmManager: Loaded {data.plots.Count} plots from save.");
+    }
+    #endregion
+
 }

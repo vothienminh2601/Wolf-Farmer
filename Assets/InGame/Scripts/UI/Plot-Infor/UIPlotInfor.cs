@@ -119,8 +119,6 @@ public class UIPlotInfor : MonoBehaviour
             uIItemContain?.ShowItemList(selectedPlot, eItemType.Seed);
             uIItemContain.RegisterOnClick(ShowFarmingPanel);
         }
-
-        Debug.Log("Show Farming");
     }
     
     void ShowAnimalPanel()
@@ -130,7 +128,6 @@ public class UIPlotInfor : MonoBehaviour
             ? AnimalManager.Instance.GetAnimalData(selectedPlot)
             : null;
 
-        Debug.Log("Animal " + unit);
         uIItemContain.gameObject.SetActive(unit == null);
         uIAnimalInfo.gameObject.SetActive(unit != null);
         if (unit != null)
@@ -142,8 +139,6 @@ public class UIPlotInfor : MonoBehaviour
             uIItemContain?.ShowItemList(selectedPlot, eItemType.Animal);
             uIItemContain.RegisterOnClick(ShowAnimalPanel);
         }
-
-        Debug.Log("Show Animal");
     }
 
     void OnClickCultivation()

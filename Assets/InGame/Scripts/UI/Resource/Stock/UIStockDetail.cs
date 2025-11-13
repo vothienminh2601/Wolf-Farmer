@@ -35,7 +35,6 @@ public class UIStockDetail : MonoBehaviour
         {
             if (stack == null || stack.quantity <= 0) continue;
             var animalData = DataManager.GetAnimalById(stack.id);
-            Debug.Log(animalData);
             string name = animalData != null ? animalData.name : stack.id;
 
             var item = Instantiate(itemPrefab, contentParent);

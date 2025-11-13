@@ -44,7 +44,7 @@ public class UIAnimalInfo : MonoBehaviour
 
         productTxt.text = $"Product: {unit.productCount}/{unit.data.maxProductCount}";
 
-        float spawnProgress = unit.IsAdult ? unit.productTimer / unit.data.productInterval : 0f;
+        float spawnProgress = unit.IsAdult ? unit.productTimer / unit.GetTimeInterval() : 0f;
         spawnSlider.value = spawnProgress;
         spawnTimeTxt.text = $"{TimeUtility.FormatTime((int)(unit.GetTimeToNextProduct()))}";
 

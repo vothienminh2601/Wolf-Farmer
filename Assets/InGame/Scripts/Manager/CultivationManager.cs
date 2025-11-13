@@ -53,12 +53,14 @@ public class CultivationManager : Singleton<CultivationManager>
 
         var data = new CultivationData(plot, seed);
         activePlots.Add(data);
+        UserData.Instance.SaveGame();
     }
 
     public void UnregisterPlot(Plot plot)
     {
         if (plot == null) return;
         activePlots.RemoveAll(p => p.plot == plot);
+        UserData.Instance.SaveGame();
     }
 
     public void HarvestPlot(Plot plot)

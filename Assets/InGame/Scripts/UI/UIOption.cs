@@ -47,6 +47,7 @@ public class UIOption : Singleton<UIOption>
 
     void Exit()
     {
+        
         UserData.Instance.SaveGame();
         Application.Quit();
     }
