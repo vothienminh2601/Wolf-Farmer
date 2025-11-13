@@ -169,7 +169,7 @@ public class UIShop : Singleton<UIShop>
                 if (currentBuyCategory == eBuyCategory.Seed)
                     ResourceManager.Instance.AddSeed(item.GetId(), qty);
                 else
-                    ResourceManager.Instance.AddAnimal(item.GetId(), qty);
+                    ResourceManager.Instance.AddAnimalBreed(item.GetId(), qty);
             }
             
         }

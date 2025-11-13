@@ -9,7 +9,7 @@ public class UIEquipmentDetail : MonoBehaviour
 
     void Start()
     {
-        priceTxt.SetText($"UPGRADE: {GameConfigs.PRICE_UPGRADE_EQUIPMENT}");
+        priceTxt.SetText($"UPGRADE: {GameConfigs.PRICE_UPGRADE_EQUIPMENT}$");
         upgradeBtn.onClick.AddListener(() => EquipmentManager.Instance.Upgrade());
     }
 

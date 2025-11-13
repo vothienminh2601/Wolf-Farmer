@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,6 +13,7 @@ public class UIFarmDetail : MonoBehaviour
 
     void Start()
     {
+        buyPlotBtn.GetComponentInChildren<TMP_Text>().SetText($"BUY: {GameConfigs.PRICE_NEW_PLOT}$");
         buyPlotBtn.onClick.AddListener(() => FarmManager.Instance.ExpandFarm());
     }
 

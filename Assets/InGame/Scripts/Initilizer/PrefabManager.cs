@@ -7,14 +7,12 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class PrefabManager : Singleton<PrefabManager>
 {
-    // Cache prefab theo key (thường là address)
+
     private readonly Dictionary<string, GameObject> _cache = new();
 
-    // Handles để release đúng cách
     private readonly Dictionary<string, AsyncOperationHandle<GameObject>> _keyHandles = new();
     private readonly Dictionary<string, AsyncOperationHandle<IList<GameObject>>> _labelHandles = new();
 
-    // Track key thuộc label nào để release chọn lọc
     private readonly Dictionary<string, HashSet<string>> _labelKeys = new(); // label -> keys
 
     void Start()

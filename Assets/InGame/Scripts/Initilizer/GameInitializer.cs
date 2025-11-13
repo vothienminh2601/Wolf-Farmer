@@ -12,18 +12,6 @@ public class GameInitializer : MonoBehaviour
     [Header("References")]
     [SerializeField] private FarmManager fieldManager;
 
-    [Header("Farm Settings")]
-    [SerializeField] private int plotsPerRow = 3;
-    [SerializeField] private int tilesPerPlot = 5;
-    [SerializeField] private float tileSpacing = 2f;
-    [SerializeField] private float plotGap = 1f;
-
-    [Header("Materials")]
-    [SerializeField] private Material cropPlotMaterial;
-    [SerializeField] private Material animalPlotMaterial;
-    [SerializeField] private Material housePlotMaterial;
-    [SerializeField] private Material emptyPlotMaterial;
-
     void Start()
     {
         GenerateFarm();
@@ -35,18 +23,15 @@ public class GameInitializer : MonoBehaviour
         });
     }
 
-    // -------------------------------------------------------------
     // Tạo farm ban đầu
-    // -------------------------------------------------------------
     private void GenerateFarm()
     {
         fieldManager.GenerateInitialPlots();
         Debug.Log("✅ Farm generated successfully.");
     }
 
-    // -------------------------------------------------------------
+
     // Setup từng plot sau khi farm đã được sinh
-    // -------------------------------------------------------------
     private void SetupInitialObjects()
     {
         if (fieldManager.Plots.Count == 0)
@@ -55,7 +40,6 @@ public class GameInitializer : MonoBehaviour
             return;
         }
 
-        // Toạ độ logic cố định cho demo
         Vector2Int houseCoord = new(-1, 1);
         Vector2Int[] cropCoords =
         {
@@ -72,7 +56,6 @@ public class GameInitializer : MonoBehaviour
         List<Plot> animalPlots = new();
         Plot housePlot = null;
 
-        // Phân loại
         foreach (var kvp in fieldManager.Plots)
         {
             Vector2Int coord = kvp.Key;
@@ -86,15 +69,12 @@ public class GameInitializer : MonoBehaviour
                 animalPlots.Add(plot);
         }
 
-
-        // Plot trồng trọt
         foreach (var p in cropPlots)
         {
             BuilderManager.Instance.BuildFence(p);
             BuilderManager.Instance.BuildCultivationPlot(p);
         }
 
-        // Nhà
         if (housePlot != null)
         {
             FarmManager.Instance.SetupPlot(housePlot, ePlotPurpose.Building, null);
@@ -104,7 +84,7 @@ public class GameInitializer : MonoBehaviour
                 Quaternion.Euler(0, 180, 0)
             );
         }
-        // Các plot trống còn lại
+
         foreach (var kvp in fieldManager.Plots)
         {
             Plot plot = kvp.Value;
@@ -112,6 +92,5 @@ public class GameInitializer : MonoBehaviour
                 FarmManager.Instance.SetupPlot(plot, ePlotPurpose.Empty, null);
         }
 
-        Debug.Log("✅ Setup complete: House(-1,1), Animal(1,0), Crops bottom row (-1,-1),(0,-1),(1,-1)");
     }
 }

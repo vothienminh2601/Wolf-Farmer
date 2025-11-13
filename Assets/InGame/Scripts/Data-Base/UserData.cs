@@ -124,6 +124,21 @@ public class UserData : Singleton<UserData>
         }
     }
 
+    public void DeleteAllData()
+    {
+        Debug.Log("Clearing all user data...");
+        PlayerPrefs.DeleteAll(); 
+        System.IO.DirectoryInfo dir = new System.IO.DirectoryInfo(Application.persistentDataPath);
+
+        foreach (var file in dir.GetFiles())
+        {
+            try { file.Delete(); }
+            catch { Debug.LogWarning($"Failed to delete {file.Name}"); }
+        }
+
+        Debug.Log("All save data deleted.");
+    }
+
     protected void OnDestroy()
     {
         SaveLastSavedTime();
@@ -149,8 +164,6 @@ public class UserData : Singleton<UserData>
         if (gameSave == null) return;
 
         if(gameSave.resourceData != null) ResourceManager.Instance.LoadFromSave(gameSave.resourceData);
-
-        Debug.Log("✅ Game loaded successfully!");
     }
     #endregion
 

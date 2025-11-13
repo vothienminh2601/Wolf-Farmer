@@ -14,6 +14,7 @@ public class UIResourceManager : MonoBehaviour
     [SerializeField] private TMP_Text equipmentLvlTxt;
     [SerializeField] private TMP_Text workerTxt;
     [SerializeField] private TMP_Text farmTxt;
+    [SerializeField] private TMP_Text timeScaleTxt;
     [SerializeField] private Toggle productToggle, farmToggle, stockToggle, equipmentToggle;
 
     [SerializeField] private Button shopBtn;
@@ -35,6 +36,7 @@ public class UIResourceManager : MonoBehaviour
         AnimalManager.OnTickCultivation += SetFarmDetail;
         ResourceManager.OnResourceChanged += RefreshStats;
         EquipmentManager.OnUpgrade += SetEquipment;
+        GameManager.OnTimeScaleChanged += SetTimeScale;
 
         uIStockDetail.gameObject.SetActive(false);
         stockToggle.isOn = false;
@@ -66,6 +68,7 @@ public class UIResourceManager : MonoBehaviour
         CultivationManager.OnTickCultivation -= SetFarmDetail;
         ResourceManager.OnResourceChanged -= RefreshStats;
         EquipmentManager.OnUpgrade -= SetEquipment;
+        GameManager.OnTimeScaleChanged -= SetTimeScale;
 
 
         productToggle.onValueChanged.RemoveListener(ToggleProductDetail);
@@ -73,7 +76,10 @@ public class UIResourceManager : MonoBehaviour
         stockToggle.onValueChanged.RemoveListener(ToggleStockDetail);
     }
 
-
+    void SetTimeScale(float timeScale)
+    {
+        timeScaleTxt.SetText($"TimeScale: {timeScale}");
+    }
     void SetCoin(int coin)
     {
         coinTxt.SetText($"Coin: {coin}");
@@ -170,6 +176,7 @@ public class UIResourceManager : MonoBehaviour
         var farm = FarmManager.Instance;
         var equipment = EquipmentManager.Instance;
 
+        SetTimeScale(Time.timeScale);
         // 1. Coin
         coinTxt.text = $"Coin: {resource.GetCoin()}";
 

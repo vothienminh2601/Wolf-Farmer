@@ -2,22 +2,15 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// Quản lý toàn bộ tài nguyên và vật phẩm trong game.
-/// Bao gồm Coin, Seed, Fruit, Equipment, Worker, Farm và thống kê tổng.
-/// </summary>
-    [System.Serializable]
-    public class ResourceStack
-    {
-        public string id;
-        public int quantity;
-    }
-public class ResourceManager : MonoBehaviour
+[System.Serializable]
+public class ResourceStack
 {
-    public static ResourceManager Instance { get; private set; }
+    public string id;
+    public int quantity;
+}
 
-
-    // ==============================
+public class ResourceManager : Singleton<ResourceManager>
+{
     [Header("Currency")]
     [SerializeField] private int coin;
 
@@ -36,12 +29,6 @@ public class ResourceManager : MonoBehaviour
 
     [Header("Statistics")]
     [SerializeField] private int totalHarvest;
-
-    void Awake()
-    {
-        if (Instance != null) { Destroy(gameObject); return; }
-        Instance = this;
-    }
 
     public ResourceSaveData GetSaveData()
     {
@@ -127,7 +114,7 @@ public class ResourceManager : MonoBehaviour
         OnStockChanged?.Invoke(seeds, animalBreeds);
     }
     public int GetAnimalBreedCount(string id) => GetCount(animalBreeds, id);
-    public List<ResourceStack> GetAllAnimalBreeds() => seeds;
+    public List<ResourceStack> GetAllAnimalBreeds() => animalBreeds;
 
     // ============================================================
     // ANIMAL

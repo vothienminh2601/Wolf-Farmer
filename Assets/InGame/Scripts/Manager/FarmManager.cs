@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 using Unity.AI.Navigation;
+using NUnit.Framework;
 
 public class FarmManager : Singleton<FarmManager>
 {
@@ -11,7 +12,6 @@ public class FarmManager : Singleton<FarmManager>
     [SerializeField] private GameObject plotPrefab;
     [SerializeField] private GameObject tilePrefab;
     [SerializeField] private Material baseMaterial;
-    [SerializeField] private int plotsPerRow = 3;
     [SerializeField] private float plotGap = 1f;
 
 
@@ -28,13 +28,6 @@ public class FarmManager : Singleton<FarmManager>
     void RefComponents()
     {
         farmPlots = GetComponentsInChildren<Plot>(true).ToList();
-    }
-
-
-    public void BuildNavMesh()
-    {
-        if (navSurface != null)
-            navSurface.BuildNavMesh();
     }
 
     public void ExpandFarm()
@@ -100,7 +93,7 @@ public class FarmManager : Singleton<FarmManager>
 
     public void GenerateInitialPlots()
     {
-        int half = plotsPerRow / 2;
+        int half = GameConfigs.PLOT_ROW_STARTER / 2;
         for (int x = -half; x <= half; x++)
         {
             for (int z = -half; z <= half; z++)
@@ -109,9 +102,7 @@ public class FarmManager : Singleton<FarmManager>
             }
         }
 
-        BuildNavMesh();
         UserData.Instance.SaveGame();
-        Debug.Log($"FarmField: sinh {_plots.Count} plot ({plotsPerRow}x{plotsPerRow}) thành công!");
     }
 
     public void CreatePlotAt(Vector2Int coord)
@@ -169,6 +160,7 @@ public class FarmManager : Singleton<FarmManager>
         return tile;
     }
 
+    [Test]
     public List<Tile> GetNeighborTiles(Tile center)
     {
         List<Tile> result = new();
@@ -311,7 +303,7 @@ public class FarmManager : Singleton<FarmManager>
             data.plots.Add(pData);
         }
 
-        Debug.Log($"✅ FarmManager: Collected save data with {data.plots.Count} plots.");
+        Debug.Log($"FarmManager: Collected save data with {data.plots.Count} plots.");
         return data;
     }
 
@@ -377,8 +369,7 @@ public class FarmManager : Singleton<FarmManager>
             }
         }
 
-        BuildNavMesh();
-        Debug.Log($"✅ FarmManager: Loaded {data.plots.Count} plots from save.");
+        Debug.Log($"FarmManager: Loaded {data.plots.Count} plots from save.");
     }
     #endregion
 

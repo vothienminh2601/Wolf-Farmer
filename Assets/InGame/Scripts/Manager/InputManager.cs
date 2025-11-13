@@ -2,10 +2,8 @@ using UnityEngine;
 using System;
 using UnityEngine.EventSystems;
 
-public class InputManager : MonoBehaviour
+public class InputManager : Singleton<InputManager>
 {
-    public static InputManager Instance { get; private set; }
-
     [Header("Raycast Settings")]
     [SerializeField] private LayerMask plotMask;
     [SerializeField] private LayerMask tileMask;
@@ -29,12 +27,6 @@ public class InputManager : MonoBehaviour
 
     void Awake()
     {
-        if (Instance != null)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        Instance = this;
         cam = Camera.main;
     }
 
