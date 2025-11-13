@@ -47,7 +47,7 @@ public class UIFarmingInfor : MonoBehaviour
 
         float spawnProgress = currentData.IsMature ? currentData.fruitTimer / currentData.seed.fruitInterval : 0f;
         spawnSlider.value = spawnProgress;
-        spawnTimeTxt.text = $"{currentData.GetTimeToNextProduct()}";
+        spawnTimeTxt.text = $"{TimeUtility.FormatTime((int)(currentData.GetTimeToNextProduct()))}";
 
         int unharvested = ProductManager.Instance.GetProductCountByPlot(currentData.plot);
         unharvestTxt.text = $"Unharvested: {unharvested}";

@@ -32,6 +32,7 @@ public class ResourceManager : MonoBehaviour
     public static event Action<int> OnCoinChanged;
     public static event Action<List<ResourceStack>> OnProductChanged;
     public static event Action<List<ResourceStack>, List<ResourceStack>> OnStockChanged;
+    public static event Action OnResourceChanged;
 
     [Header("Statistics")]
     [SerializeField] private int totalHarvest;
@@ -42,8 +43,44 @@ public class ResourceManager : MonoBehaviour
         Instance = this;
     }
 
+    public ResourceSaveData GetSaveData()
+    {
+        ResourceSaveData data = new ResourceSaveData();
+        data.coin = coin;
+
+        data.seeds = new List<ResourceStack>(seeds);
+        data.animalBreeds = new List<ResourceStack>(animalBreeds);
+        data.products = new List<ResourceStack>(products);
+        data.animals = new List<ResourceStack>(animals);
+        data.equipments = new List<ResourceStack>(equipments);
+        data.workers = new List<ResourceStack>(workers);
+
+        return data;
+    }
+
+    public void LoadFromSave(ResourceSaveData data)
+    {
+        if (data == null)
+        {
+            Debug.LogWarning("ResourceManager.LoadFromSave: No data found.");
+            return;
+        }
+
+        coin = data.coin;
+        seeds = data.seeds ?? new();
+        animalBreeds = data.animalBreeds ?? new();
+        products = data.products ?? new();
+        animals = data.animals ?? new();
+        equipments = data.equipments ?? new();
+        workers = data.workers ?? new();
+
+        OnResourceChanged?.Invoke();
+
+        Debug.Log("✅ ResourceManager data loaded.");
+    }
+
     // ============================================================
-    // 🪙 COIN
+    // COIN
     // ============================================================
     public int GetCoin() => coin;
 
@@ -63,7 +100,7 @@ public class ResourceManager : MonoBehaviour
     }
 
     // ============================================================
-    // 🌱 SEED
+    // SEED
     // ============================================================
     public void AddSeed(string id, int amount = 1) {
         AddToList(seeds, id, amount);
@@ -78,7 +115,7 @@ public class ResourceManager : MonoBehaviour
     public List<ResourceStack> GetAllSeeds() => seeds;
 
     // ============================================================
-    // 🌱 Animal Breed
+    // Animal Breed
     // ============================================================
     public void AddAnimalBreed(string id, int amount = 1) {
         AddToList(animalBreeds, id, amount);
@@ -93,7 +130,7 @@ public class ResourceManager : MonoBehaviour
     public List<ResourceStack> GetAllAnimalBreeds() => seeds;
 
     // ============================================================
-    // 🌱 ANIMAL
+    // ANIMAL
     // ============================================================
     public void AddAnimal(string id, int amount = 1) {
         AddToList(animals, id, amount);
@@ -105,7 +142,7 @@ public class ResourceManager : MonoBehaviour
     public List<ResourceStack> GetAllAnimals() => seeds;
 
     // ============================================================
-    // 🍎 FRUIT
+    // PRODUCT
     // ============================================================
     public void AddProduct(string id, int amount = 1)
     {
@@ -123,14 +160,14 @@ public class ResourceManager : MonoBehaviour
     public List<ResourceStack> GetAllProducts() => products;
 
     // ============================================================
-    // ⚙️ EQUIPMENT
+    // EQUIPMENT
     // ============================================================
     public void AddEquipment(string id, int amount = 1) => AddToList(equipments, id, amount);
     public int GetEquipmentCount(string id) => GetCount(equipments, id);
     public List<ResourceStack> GetAllEquipments() => equipments;
 
     // ============================================================
-    // 👷 WORKER
+    // WORKER
     // ============================================================
     public void AddWorker(string id, int amount = 1) => AddToList(workers, id, amount);
     public void RemoveWorker(string id, int amount = 1) => RemoveFromList(workers, id, amount);
@@ -138,13 +175,13 @@ public class ResourceManager : MonoBehaviour
     public List<ResourceStack> GetAllWorkers() => workers;
 
     // ============================================================
-    // 📊 STATISTICS
+    // STATISTICS
     // ============================================================
     public int GetTotalHarvest() => totalHarvest;
     public void ResetTotalHarvest() => totalHarvest = 0;
 
     // ============================================================
-    // 🧩 UTILITY
+    // UTILITY
     // ============================================================
     private void AddToList(List<ResourceStack> list, string id, int amount)
     {

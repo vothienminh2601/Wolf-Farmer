@@ -12,7 +12,7 @@ public class UIFarmDetailItem : MonoBehaviour
 
     public void Setup(string name, string time, Plot plot = null)
     {
-        nameTxt.text = name + ":"  + time;
+        nameTxt.text = $"{name}: [{time}]";
         linkedPlot = plot;
 
         // Gỡ listener cũ để tránh double bind
@@ -31,6 +31,6 @@ public class UIFarmDetailItem : MonoBehaviour
         // ✅ Gọi InputManager để focus camera vào plot
         InputManager.Instance.SelectPlot(linkedPlot);
 
-        Debug.Log($"📍 Focused on plot: {linkedPlot.name}");
+        Debug.Log($"Focused on plot: {linkedPlot.name}");
     }
 }

@@ -46,6 +46,11 @@ public class InputManager : MonoBehaviour
             HandleClick();
         }
 
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            UIOption.Instance.Toggle();
+        }
+
     }
 
     // -------------------------------------------------------------

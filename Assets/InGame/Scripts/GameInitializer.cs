@@ -28,6 +28,11 @@ public class GameInitializer : MonoBehaviour
     {
         GenerateFarm();
         SetupInitialObjects();
+
+        UserData.Instance.LoadUserProfile(profile =>
+        {
+            UserData.Instance.LoadGame(); // giờ mới khôi phục dữ liệu
+        });
     }
 
     // -------------------------------------------------------------

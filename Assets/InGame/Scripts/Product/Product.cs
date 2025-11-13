@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Product : MonoBehaviour
 {
-    protected ProductData productData;
+    public ProductData productData;
     private Plot sourcePlot;
     public Plot SourcePlot => sourcePlot;
     protected bool collected;

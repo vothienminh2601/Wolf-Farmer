@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,6 +7,7 @@ public class AnimalManager : Singleton<AnimalManager>
     [SerializeField] private List<AnimalUnit> activeAnimals = new();
     [SerializeField] private float updateInterval = 1f;
     private float timer;
+    public static event Action OnTickCultivation;
 
     void Update()
     {
@@ -14,6 +16,8 @@ public class AnimalManager : Singleton<AnimalManager>
         {
             timer = 0f;
             TickAnimals();
+
+            OnTickCultivation?.Invoke();
         }
     }
 

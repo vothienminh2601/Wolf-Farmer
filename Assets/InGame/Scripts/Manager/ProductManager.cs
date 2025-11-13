@@ -91,6 +91,29 @@ public class ProductManager : Singleton<ProductManager>
             productByPlot.Remove(plot);
     }
 
+    public Product GetNearestProduct(Vector3 fromPos)
+    {
+        Product nearest = null;
+        float minDist = Mathf.Infinity;
+
+        foreach (var kv in productByPlot)
+        {
+            foreach (var prod in kv.Value)
+            {
+                if (prod == null) continue;
+
+                float dist = Vector3.Distance(fromPos, prod.transform.position);
+                if (dist < minDist)
+                {
+                    minDist = dist;
+                    nearest = prod;
+                }
+            }
+        }
+        return nearest;
+    }
+
+
     public void ClearPlot(Plot plot)
     {
         if (plot == null || !productByPlot.ContainsKey(plot)) return;

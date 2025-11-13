@@ -2,23 +2,29 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using Unity.AI.Navigation;
 
 public class FarmManager : Singleton<FarmManager>
 {
     [Header("Prefabs & Settings")]
-    [SerializeField] private GameObject plotPrefab; 
-    [SerializeField] private GameObject tilePrefab; 
+    [SerializeField] private NavMeshSurface navSurface;
+    [SerializeField] private GameObject plotPrefab;
+    [SerializeField] private GameObject tilePrefab;
     [SerializeField] private Material baseMaterial;
     [SerializeField] private int plotsPerRow = 3;
-    [SerializeField] private float plotGap = 1f; 
+    [SerializeField] private float plotGap = 1f;
 
+    [Header("Expand Settings")]
+    [SerializeField] private int baseExpandCost = 500;
+    [SerializeField] private float costMultiplier = 1.5f;
+
+    [Header("Runtime Data")]
     [SerializeField] private List<Plot> farmPlots = new();
     private readonly Dictionary<Vector2Int, Plot> _plots = new();
-    public Dictionary<Vector2Int, Plot> Plots => _plots;
     private readonly Dictionary<Vector2Int, Tile> _globalTileMap = new();
 
-
     public static event Action<int, int, List<Plot>> OnPlotChanged;
+    public Dictionary<Vector2Int, Plot> Plots => _plots;
 
 
     [ContextMenu("Ref Components")]
@@ -27,28 +33,72 @@ public class FarmManager : Singleton<FarmManager>
         farmPlots = GetComponentsInChildren<Plot>(true).ToList();
     }
 
-    private void RegisterExistingPlots()
+
+    public void BuildNavMesh()
     {
-        _plots.Clear();
-        _globalTileMap.Clear();
+        if (navSurface != null)
+            navSurface.BuildNavMesh();
+    }
 
+    public void ExpandFarm()
+    {
+        int cost = GameConfigs.PRICE_NEW_PLOT;
 
-        foreach (var plot in farmPlots)
+        if (ResourceManager.Instance.GetCoin() < cost)
         {
-            Vector2Int coord = new Vector2Int(plot.PlotX, plot.PlotZ);
-            if (!_plots.ContainsKey(coord))
-                _plots.Add(coord, plot);
+            Debug.LogWarning($"Không đủ tiền để mở rộng ({cost} coin)");
+            return;
+        }
+        ResourceManager.Instance.SpendCoin(cost);
 
-            // đăng ký tile toàn cục
-            foreach (Tile t in plot.GetAllTiles())
+        Vector2Int nextCoord = GetNextPlotCoord();
+        if (_plots.ContainsKey(nextCoord))
+        {
+            Debug.LogWarning($"Plot {nextCoord} đã tồn tại!");
+            return;
+        }
+
+        CreatePlotAt(nextCoord);
+        SaveExpandedFarm();
+
+        Debug.Log($"Mở rộng farm: thêm Plot_{nextCoord.x}_{nextCoord.y} với giá {cost} coin");
+    }
+
+    private Vector2Int GetNextPlotCoord()
+    {
+        int count = _plots.Count;
+        if (count == 0) return Vector2Int.zero;
+
+        int size = Mathf.CeilToInt(Mathf.Sqrt(count));
+        int maxCount = size * size;
+
+        if (count < maxCount + 1)
+        {
+            int half = size / 2 ;
+            for (int x = -half; x <= half; x++)
             {
-                Vector2Int tileCoord = new Vector2Int(t.GlobalX, t.GlobalZ);
-                if (!_globalTileMap.ContainsKey(tileCoord))
-                    _globalTileMap.Add(tileCoord, t);
+                for (int z = -half; z <= half; z++)
+                {
+                    Vector2Int coord = new(x, z);
+                    if (!_plots.ContainsKey(coord))
+                        return coord;
+                }
             }
         }
 
-        Debug.Log($"FarmFieldManager: Loaded {_plots.Count} plots ({_globalTileMap.Count} tiles) from scene.");
+        int newSize = size + 1;
+        int newHalf = newSize/ 2;
+        for (int x = -newHalf; x <= newHalf; x++)
+        {
+            for (int z = -newHalf + 1; z <= newHalf; z++)
+            {
+                Vector2Int coord = new(x, z);
+                if (!_plots.ContainsKey(coord))
+                    return coord;
+            }
+        }
+
+        return Vector2Int.zero;
     }
 
     public void GenerateInitialPlots()
@@ -61,12 +111,12 @@ public class FarmManager : Singleton<FarmManager>
                 CreatePlotAt(new Vector2Int(x, z));
             }
         }
+
+        BuildNavMesh();
+        SaveExpandedFarm();
         Debug.Log($"FarmField: sinh {_plots.Count} plot ({plotsPerRow}x{plotsPerRow}) thành công!");
     }
 
-    // --------------------------------------------
-    // Tạo 1 plot tại tọa độ logic (plotX, plotZ)
-    // --------------------------------------------
     public void CreatePlotAt(Vector2Int coord)
     {
         if (_plots.ContainsKey(coord)) return;
@@ -82,18 +132,45 @@ public class FarmManager : Singleton<FarmManager>
         plotObj.name = $"Plot_{coord.x}_{coord.y}";
 
         Plot plot = plotObj.GetComponent<Plot>();
-        if (plot == null) plot = plotObj.AddComponent<Plot>();
+        if (plot == null)
+            plot = plotObj.AddComponent<Plot>();
 
         plot.Initialize(this, coord.x, coord.y, GameConfigs.TILES_SPACING, tilePrefab, baseMaterial);
         _plots.Add(coord, plot);
 
-        // Đăng ký các tile của plot vào global map
         foreach (Tile t in plot.GetAllTiles())
         {
-            Vector2Int tileCoord = new Vector2Int(t.GlobalX, t.GlobalZ);
+            Vector2Int tileCoord = new(t.GlobalX, t.GlobalZ);
             if (!_globalTileMap.ContainsKey(tileCoord))
                 _globalTileMap.Add(tileCoord, t);
         }
+
+        farmPlots.Add(plot);
+    }
+
+    public void SaveExpandedFarm()
+    {
+        List<Vector2Int> coords = _plots.Keys.ToList();
+        UserData.Instance.SetData("farm_plots", coords);
+    }
+
+    public void LoadExpandedFarm()
+    {
+        var coords = UserData.Instance.GetData<List<Vector2Int>>("farm_plots");
+        if (coords == null || coords.Count == 0)
+        {
+            GenerateInitialPlots();
+            return;
+        }
+
+        foreach (var coord in coords)
+        {
+            if (!_plots.ContainsKey(coord))
+                CreatePlotAt(coord);
+        }
+
+        BuildNavMesh();
+        Debug.Log($"✅ Loaded {coords.Count} farm plots from save.");
     }
 
     public void SetupPlot(Plot plot, ePlotPurpose purpose, GameObject markerPrefab = null,
@@ -113,7 +190,6 @@ public class FarmManager : Singleton<FarmManager>
         OnPlotChanged?.Invoke(GetActivePlotCount(), GetEmptyPlotCount(), farmPlots);
         Debug.Log($"SetupPlot: {name} tại ({plot.PlotX},{plot.PlotZ})");
     }
-
 
     public Tile GetTileAtGlobal(int gx, int gz)
     {
@@ -148,6 +224,7 @@ public class FarmManager : Singleton<FarmManager>
     public int GetTotalPlotCount() => _plots.Count;
     public int GetActivePlotCount() => _plots.Count(p => p.Value.Purpose != ePlotPurpose.Empty);
     public int GetEmptyPlotCount() => _plots.Count(p => p.Value.Purpose == ePlotPurpose.Empty);
+
     public List<Plot> GetEmptyPlots()
     {
         List<Plot> result = new();
@@ -160,6 +237,22 @@ public class FarmManager : Singleton<FarmManager>
         return result;
     }
 
+    public Plot GetNearestEmptyPlot(Vector3 fromPos)
+    {
+        Plot nearest = null;
+        float minDist = Mathf.Infinity;
+
+        foreach (var p in GetEmptyPlots())
+        {
+            float dist = Vector3.Distance(fromPos, p.transform.position);
+            if (dist < minDist)
+            {
+                minDist = dist;
+                nearest = p;
+            }
+        }
+        return nearest;
+    }
 
     public List<Plot> GetFarmingPlots()
     {
@@ -173,7 +266,6 @@ public class FarmManager : Singleton<FarmManager>
         return result;
     }
 
-
     public List<Plot> GetAnimalPlots()
     {
         List<Plot> result = new();
@@ -186,7 +278,6 @@ public class FarmManager : Singleton<FarmManager>
         return result;
     }
 
-    
     public Plot GetPlot(Vector2Int coord)
     {
         _plots.TryGetValue(coord, out var plot);

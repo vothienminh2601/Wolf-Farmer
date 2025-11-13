@@ -46,7 +46,7 @@ public class UIAnimalInfo : MonoBehaviour
 
         float spawnProgress = unit.IsAdult ? unit.productTimer / unit.data.productInterval : 0f;
         spawnSlider.value = spawnProgress;
-        spawnTimeTxt.text = $"{unit.GetTimeToNextProduct()}";
+        spawnTimeTxt.text = $"{TimeUtility.FormatTime((int)(unit.GetTimeToNextProduct()))}";
 
         int unharvested = ProductManager.Instance.GetProductCountByPlot(unit.plot);
         unharvestTxt.text = $"Unharvested: {unharvested}";

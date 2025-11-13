@@ -1,12 +1,24 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIFarmDetail : MonoBehaviour
 {
     [SerializeField] private UIFarmDetailItem itemPrefab;
     [SerializeField] private RectTransform contentParent;
+    [SerializeField] private Button buyPlotBtn;
 
     private readonly List<UIFarmDetailItem> activeItems = new();
+
+    void Start()
+    {
+        buyPlotBtn.onClick.AddListener(() => FarmManager.Instance.ExpandFarm());
+    }
+
+    void OnDestroy()
+    {
+        buyPlotBtn.onClick.RemoveAllListeners();
+    }
 
     public void ShowDetails()
     {
@@ -27,9 +39,8 @@ public class UIFarmDetail : MonoBehaviour
             var data = CultivationManager.Instance.GetCultivationData(plot);
             string cropName = data != null ? data.seed.name.Split("-")[0] : "Farm";
             string timeTxt = data != null && data.IsMature
-                ? $"{data.GetTimeToNextProduct()}s"
-                : "Is Growing";
-            if (data == null) timeTxt = "Empty";
+                ? $"{data.GetTimeToNextProduct()}"
+                : data != null ? data.CropStage.ToString() : "Empty";
             
             var item = Instantiate(itemPrefab, contentParent);
             item.Setup(cropName, timeTxt, plot);
@@ -43,10 +54,8 @@ public class UIFarmDetail : MonoBehaviour
             var animal = AnimalManager.Instance.GetAnimalData(plot);
             string name = animal != null ? animal.data.name : "Animal";
             string timeTxt = animal != null
-                ? (animal.IsAdult ? $"{Mathf.CeilToInt(animal.GetTimeToNextProduct())}s" : "Growing...")
+                ? (animal.IsAdult ? $"{Mathf.CeilToInt(animal.GetTimeToNextProduct())}" : "Growing...")
                 : "—";
-
-            if (animal == null) timeTxt = "Empty";
 
             var item = Instantiate(itemPrefab, contentParent);
             item.Setup(name, timeTxt, plot);

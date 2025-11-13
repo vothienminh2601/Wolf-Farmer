@@ -134,7 +134,7 @@ public class UIShop : Singleton<UIShop>
             if (data == null) continue;
 
             var item = Instantiate(itemPrefab, contentParent);
-            item.Setup(data.id, $"{data.name} (x{stack.quantity})", data.baseValue / 2, 0, OnValueChanged, stack.quantity);
+            item.Setup(data.id, $"{data.name} (x{stack.quantity})", data.baseValue, 0, OnValueChanged, stack.quantity);
             spawnedItems.Add(item);
         }
     }

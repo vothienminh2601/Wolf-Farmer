@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1118197296701464859}
   - component: {fileID: 105115913419218433}
   - component: {fileID: 7867178273695713778}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -121,7 +121,7 @@ GameObject:
   - component: {fileID: 3417863448741098500}
   - component: {fileID: 121474858585867927}
   - component: {fileID: 6419632100064797523}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Milk
   m_TagString: Untagged
   m_Icon: {fileID: 0}

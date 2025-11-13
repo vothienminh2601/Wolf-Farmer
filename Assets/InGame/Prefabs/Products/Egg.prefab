@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 1012799373501543293}
   - component: {fileID: 3014065326200008517}
   - component: {fileID: 5707514922990207855}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Egg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -149,3 +149,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10bb95b8599e9a04bad5f65aa0f494a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  productData:
+    id: 
+    name: 
+    baseValue: 0
+    iconAddress: 
+    prefabAddress: 
+    description: 

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5684329542277616775}
   - component: {fileID: 4992834921240844046}
   - component: {fileID: 459219108796761720}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cauliflower_Crop
   m_TagString: Untagged
   m_Icon: {fileID: 0}

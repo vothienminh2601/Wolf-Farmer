@@ -25,7 +25,8 @@ public class BuilderManager : Singleton<BuilderManager>
         house.transform.localRotation = rot;
 
         plot.name = $"House Plot ({plot.PlotX},{plot.PlotZ})";
-        Debug.Log($"🏠 House built at plot ({plot.PlotX},{plot.PlotZ})");
+        Debug.Log($"House built at plot ({plot.PlotX},{plot.PlotZ})");
+
     }
 
     public void BuildCultivationPlot(Plot plot)
@@ -162,7 +163,6 @@ public class BuilderManager : Singleton<BuilderManager>
             if (hasRight && z == mid) continue;
             plot.GetTile(n - 1, z)?.PlaceObject(fenceIPrefab, Vector3.zero, Quaternion.Euler(0, -90, 0));
         }
-
     }
 
     public void ClearPlot(Plot plot)
@@ -189,7 +189,6 @@ public class BuilderManager : Singleton<BuilderManager>
         }
 
         FarmManager.Instance.SetupPlot(plot, ePlotPurpose.Empty, null);
-        
 
         Debug.Log($"🧹 Cleared plot ({plot.PlotX},{plot.PlotZ}) — removed {clearedCount} objects, reset all tiles.");
     }
