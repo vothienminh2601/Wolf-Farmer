@@ -19,13 +19,10 @@ public class Tile : MonoBehaviour
     public bool IsOccupied => placedObject != null;
     [SerializeField] private Transform placement;
     private Plot parentPlot;
-    [SerializeField] private GameObject placedObject;  // vật đang được đặt lên tile
+    [SerializeField] private GameObject placedObject; 
     private MeshRenderer meshRenderer;
     private MeshFilter meshFilter;
 
-    // -------------------------------------------------------------
-    // Khởi tạo
-    // -------------------------------------------------------------
     public void Setup(Plot plot, int x, int z)
     {
         meshRenderer = GetComponent<MeshRenderer>();
@@ -41,9 +38,7 @@ public class Tile : MonoBehaviour
         UpdateVisual();
     }
 
-    // -------------------------------------------------------------
-    // Thay đổi loại đất (nếu không bị chiếm)
-    // -------------------------------------------------------------
+
     public void SetType(eTileType newType)
     {
         if (IsOccupied)
@@ -64,7 +59,6 @@ public class Tile : MonoBehaviour
             return false;
         }
 
-        // Nếu không có giá trị truyền vào, dùng mặc định
         if (rot == default) rot = Quaternion.identity;
 
         placedObject = Instantiate(prefab, placement);
@@ -80,7 +74,7 @@ public class Tile : MonoBehaviour
         if (rend != null)
         {
             Color baseColor = Color.white;
-            rend.material.color = selected ? Color.green : baseColor; // sáng khi chọn
+            rend.material.color = selected ? Color.green : baseColor; 
         }
     }
     
@@ -91,9 +85,6 @@ public class Tile : MonoBehaviour
         placedObject = null;
     }
 
-    // -------------------------------------------------------------
-    // Hiển thị trực quan
-    // -------------------------------------------------------------
     private void UpdateVisual()
     {
         if (meshFilter == null) return;
@@ -107,7 +98,7 @@ public class Tile : MonoBehaviour
                 meshFilter.mesh = tileMeshes[1];
                 break;
             case eTileType.Animal:
-                meshFilter.mesh = tileMeshes[2]; // vàng nhạt
+                meshFilter.mesh = tileMeshes[2];
                 break;
         }
     }

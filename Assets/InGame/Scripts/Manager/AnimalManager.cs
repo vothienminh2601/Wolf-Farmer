@@ -45,14 +45,14 @@ public class AnimalManager : Singleton<AnimalManager>
         });
 
         Debug.Log($"Added new {data.name} to the farm!");
-        UserData.Instance.SaveGame();
+        // UserData.Instance.SaveGame();
     }
 
     public void RemoveAnimal(AnimalUnit unit)
     {
         if (unit == null) return;
         activeAnimals.Remove(unit);
-        UserData.Instance.SaveGame();
+        // UserData.Instance.SaveGame();
     }
 
     public void RemoveAnimalByPlot(Plot plot)
@@ -72,7 +72,7 @@ public class AnimalManager : Singleton<AnimalManager>
                 Debug.Log($"Removed animal from plot: {plot.name}");
             }
         }
-        UserData.Instance.SaveGame();
+        // UserData.Instance.SaveGame();
     }
 
     public AnimalUnit GetAnimalData(Plot plot)

@@ -63,7 +63,7 @@ public class ResourceManager : Singleton<ResourceManager>
 
         OnResourceChanged?.Invoke();
 
-        Debug.Log("✅ ResourceManager data loaded.");
+        Debug.Log("ResourceManager data loaded.");
     }
 
     // ============================================================
@@ -76,6 +76,7 @@ public class ResourceManager : Singleton<ResourceManager>
         coin += amount;
         if (coin < 0) coin = 0;
         OnCoinChanged?.Invoke(coin);
+        UserData.Instance.SaveGame();
     }
 
     public bool SpendCoin(int amount)
@@ -83,6 +84,7 @@ public class ResourceManager : Singleton<ResourceManager>
         if (coin < amount) return false;
         coin -= amount;
         OnCoinChanged?.Invoke(coin);
+        UserData.Instance.SaveGame();
         return true;
     }
 
@@ -179,6 +181,8 @@ public class ResourceManager : Singleton<ResourceManager>
             item.quantity += amount;
         else
             list.Add(new ResourceStack { id = id, quantity = amount });
+
+        UserData.Instance.SaveGame();
     }
 
     private void RemoveFromList(List<ResourceStack> list, string id, int amount)
@@ -189,6 +193,8 @@ public class ResourceManager : Singleton<ResourceManager>
         item.quantity -= amount;
         if (item.quantity <= 0)
             list.Remove(item);
+
+        UserData.Instance.SaveGame();
     }
 
     private int GetCount(List<ResourceStack> list, string id)

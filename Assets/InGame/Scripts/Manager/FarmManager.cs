@@ -49,7 +49,7 @@ public class FarmManager : Singleton<FarmManager>
         }
 
         CreatePlotAt(nextCoord);
-        UserData.Instance.SaveGame();
+        // UserData.Instance.SaveGame();
 
         Debug.Log($"Mở rộng farm: thêm Plot_{nextCoord.x}_{nextCoord.y} với giá {cost} coin");
     }
@@ -102,7 +102,7 @@ public class FarmManager : Singleton<FarmManager>
             }
         }
 
-        UserData.Instance.SaveGame();
+        // UserData.Instance.SaveGame();
     }
 
     public void CreatePlotAt(Vector2Int coord)

@@ -18,7 +18,6 @@ public class GameInitializer : MonoBehaviour
         SetupInitialObjects();
         UserData.Instance.LoadUserProfile(hasProfile =>
         {
-            Debug.Log("📂 Found existing profile → loading game...");
             UserData.Instance.LoadGame();
         });
     }

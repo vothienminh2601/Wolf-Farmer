@@ -161,9 +161,10 @@ public class UserData : Singleton<UserData>
     {
         var gameSave = GetData<GameSaveData>("gameSave");
 
+        Debug.Log("----" + gameSave);
         if (gameSave == null) return;
 
-        if(gameSave.resourceData != null) ResourceManager.Instance.LoadFromSave(gameSave.resourceData);
+        ResourceManager.Instance.LoadFromSave(gameSave.resourceData);
     }
     #endregion
 
